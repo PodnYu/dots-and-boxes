@@ -1,0 +1,11 @@
+header,
+#lobbies,
+#online-players-list {
+	padding: 20px;
+	border: solid black 1px;
+}
+
+tr > td,
+th {
+	vertical-align: middle !important;
+}

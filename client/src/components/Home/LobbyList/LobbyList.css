@@ -1,0 +1,4 @@
+#lobbies {
+	grid-area: lobbies;
+	overflow-y: auto;
+}

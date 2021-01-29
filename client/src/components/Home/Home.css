@@ -1,0 +1,16 @@
+#home {
+	display: grid;
+	grid-template-areas:
+		"header header"
+		"online lobbies";
+	grid-template-rows: 60px 1fr;
+	grid-template-columns: 40% 1fr;
+	grid-gap: 10px;
+	height: 100vh;
+	margin: 0;
+	min-width: 560px;
+}
+
+#page-header {
+	grid-area: header;
+}
