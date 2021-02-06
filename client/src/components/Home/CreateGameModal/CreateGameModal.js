@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { Form, FormControl, Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { Form, FormControl, Button } from "react-bootstrap";
+
+import PropTypes from "prop-types";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -9,7 +11,7 @@ import "../Common.css";
 
 export default function CreateGameModal({ toggleModalView }) {
 	const history = useHistory();
-	const parameters = { width: "2", height: "2", playerCount: "2" };
+	const parameters = { width: 2, height: 2, playerCount: 2, userType: "host" };
 
 	useEffect(() => {
 		let createGameModal = document.getElementById("create-game-modal");
@@ -37,7 +39,7 @@ export default function CreateGameModal({ toggleModalView }) {
 				<div id="create-game-modal-body">
 					<Form>
 						<Form.Group>
-							<label htmlFor="lobby-name-input">Game name:</label>
+							<Form.Label htmlFor="lobby-name-input">Game name:</Form.Label>
 							<FormControl type="text" id="lobby-name-input" placeholder="lel?" />
 						</Form.Group>
 
@@ -52,7 +54,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									className="mr-sm-2"
 									id="field-width-select"
 									onChange={(event) => {
-										parameters.width = event.target.value;
+										parameters.width = +event.target.value;
 									}}
 								>
 									<option value="2">2</option>
@@ -74,7 +76,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									className="mr-sm-2"
 									id="field-height-select"
 									onChange={(event) => {
-										parameters.height = event.target.value;
+										parameters.height = +event.target.value;
 									}}
 								>
 									<option value="2">2</option>
@@ -97,7 +99,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									className="mr-sm-2"
 									id="number-of-players-input"
 									onChange={(event) => {
-										parameters.playerCount = event.target.value;
+										parameters.playerCount = +event.target.value;
 									}}
 								>
 									<option value="2">2</option>
@@ -126,3 +128,7 @@ export default function CreateGameModal({ toggleModalView }) {
 		</div>
 	);
 }
+
+CreateGameModal.PropTypes = {
+	toggleModalView: PropTypes.func.isRequired,
+};

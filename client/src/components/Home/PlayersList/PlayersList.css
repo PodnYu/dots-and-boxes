@@ -1,0 +1,16 @@
+#online-players-list-container {
+	grid-area: online-players-list;
+	overflow-y: auto;
+}
+
+.row-no {
+	width: "20%";
+}
+
+.nickname {
+	width: "40%";
+}
+
+.stats {
+	width: "40%";
+}

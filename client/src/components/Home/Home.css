@@ -1,13 +1,12 @@
-#home {
+#home-container {
 	display: grid;
 	grid-template-areas:
 		"header header"
-		"online lobbies";
+		"online-players-list lobbies-list";
 	grid-template-rows: 60px 1fr;
-	grid-template-columns: 40% 1fr;
+	grid-template-columns: 0.4fr 0.6fr;
 	grid-gap: 10px;
 	height: 100vh;
-	margin: 0;
 	min-width: 560px;
 }
 

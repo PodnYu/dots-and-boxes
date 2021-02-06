@@ -2,15 +2,15 @@ import React from "react";
 
 import "./Home.css";
 
-import PlayerList from "./PlayerList/PlayerList.js";
-import LobbyList from "./LobbyList/LobbyList";
+import PlayersList from "./PlayersList/PlayersList.js";
+import LobbiesList from "./LobbiesList/LobbiesList";
 
 export default function Home() {
 	return (
-		<div id="home">
+		<div id="home-container">
 			<header id="page-header">Header</header>
-			<PlayerList />
-			<LobbyList />
+			<PlayersList />
+			<LobbiesList />
 		</div>
 	);
 }

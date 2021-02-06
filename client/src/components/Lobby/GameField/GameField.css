@@ -1,0 +1,96 @@
+#game-field-container {
+	min-width: 500px;
+
+	grid-area: game-field-container;
+
+	display: grid;
+	grid-template-areas:
+		"buttons"
+		"game-field";
+
+	grid-template-rows: 0.1fr 0.9fr;
+	grid-template-columns: 1fr;
+	grid-row-gap: 20px;
+	justify-items: center;
+	align-items: center;
+	height: 100vh;
+}
+
+#game-field-size-selectors-container {
+	min-width: 500px;
+}
+
+.game-field-size-selector {
+	margin: 15px;
+}
+
+#game-field {
+}
+
+.dot {
+	background-color: black;
+	width: 15px;
+	height: 15px;
+	border-radius: 100%;
+}
+
+.game-field-appear {
+	opacity: 0;
+}
+
+.game-field-appear-active {
+	opacity: 1;
+	transition: opacity 500ms;
+}
+
+.game-field-appear-done {
+	opacity: 1;
+}
+
+.game-field-enter {
+	opacity: 0;
+}
+
+.game-field-enter-active {
+	opacity: 1;
+	transition: opacity 500ms;
+}
+
+.game-field-exit-active {
+	opacity: 0;
+	transition: opacity 500ms;
+}
+
+.game-field-exit-done {
+	opacity: 0;
+}
+
+.edge-vertical {
+	height: 36px;
+	width: 9px;
+	margin: 2px 3px;
+	border-radius: 10%;
+	background-color: ghostwhite;
+	transition: 0.5s;
+}
+
+.edge-horizontal {
+	height: 9px;
+	width: 36px;
+	margin: 3px 2px;
+	border-radius: 10%;
+	background-color: ghostwhite;
+	transition: 0.5s;
+}
+
+.edge-vertical:hover,
+.edge-horizontal:hover {
+	transform: scale(1.08);
+	margin-bottom: 0;
+	background-color: rgb(81, 81, 87);
+}
+
+.square {
+	width: 40px;
+	height: 40px;
+}

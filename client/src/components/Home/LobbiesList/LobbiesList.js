@@ -1,36 +1,37 @@
 import React, { useState } from "react";
 
 import { Table, Button } from "react-bootstrap";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import "./LobbyList.css";
+import "./LobbiesList.css";
 import "../Common.css";
 
 import Modal from "../CreateGameModal/CreateGameModal.js";
 
 export default function LobbyList() {
-	let [showModal, changeDisplay] = useState(false);
+	let [showModal, setShowModal] = useState(false);
 
 	const toggleModalView = () => {
-		changeDisplay(!showModal);
+		setShowModal(!showModal);
 	};
 
 	return (
 		<>
-			<div id="lobbies">
+			<div id="lobbies-list-container">
 				<Table>
 					<thead>
 						<tr>
-							<th scope="col" style={{ width: "10%" }}>
+							<th scope="col" className="align-middle row-no">
 								#
 							</th>
-							<th scope="col" className="w-25%">
+							<th scope="col" className="align-middle lobby-name">
 								Lobby Name
 							</th>
-							<th scope="col" className="width-20% text-align-center;">
+							<th scope="col" className="align-middle text-align-center players-count">
 								Players
 							</th>
-							<th scope="col" style={{ width: "20%" }} className="align-middle;">
+							<th scope="col" className="align-middle text-align-center field-size">
 								Field
 							</th>
 							<th scope="col" className="align-middle">
@@ -42,8 +43,10 @@ export default function LobbyList() {
 					</thead>
 					<tbody>
 						<tr>
-							<th scope="row">1</th>
-							<td>keks</td>
+							<th scope="row" className="align-middle">
+								1
+							</th>
+							<td className="align-middle">kek</td>
 							<td className="align-middle">3/4</td>
 							<td className="align-middle">3x4</td>
 							<td className="align-middle">
@@ -51,8 +54,10 @@ export default function LobbyList() {
 							</td>
 						</tr>
 						<tr>
-							<th scope="row">2</th>
-							<td>Flex</td>
+							<th scope="row" className="align-middle">
+								2
+							</th>
+							<td className="align-middle">Flex</td>
 							<td className="align-middle">1/4</td>
 							<td className="align-middle">5x5</td>
 							<td className="align-middle">
@@ -60,8 +65,10 @@ export default function LobbyList() {
 							</td>
 						</tr>
 						<tr>
-							<th scope="row">3</th>
-							<td>Chill</td>
+							<th scope="row" className="align-middle">
+								3
+							</th>
+							<td className="align-middle">Chill</td>
 							<td className="align-middle">1/3</td>
 							<td className="align-middle">5x7</td>
 							<td className="align-middle">

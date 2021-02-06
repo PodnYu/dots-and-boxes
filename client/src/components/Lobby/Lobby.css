@@ -1,0 +1,15 @@
+#lobby-container {
+	display: grid;
+	grid-template-areas:
+		"game-field-container opponents-list"
+		"game-field-container chat";
+	grid-template-rows: 1fr 1fr;
+	grid-template-columns: 1fr 1fr;
+	justify-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+#size {
+	grid-area: size;
+}

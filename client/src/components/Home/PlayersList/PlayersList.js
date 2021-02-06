@@ -3,22 +3,22 @@ import { Table } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import "./PlayerList.css";
+import "./PlayersList.css";
 import "../Common.css";
 
 export default function PlayerList() {
 	return (
-		<div id="online-players-list">
+		<div id="online-players-list-container">
 			<Table>
 				<thead>
 					<tr>
-						<th scope="col" style={{ width: "20%" }}>
+						<th scope="col" className="row-no">
 							#
 						</th>
-						<th scope="col" style={{ width: "40%" }}>
+						<th scope="col" className="nickname">
 							Nickname
 						</th>
-						<th scope="col" style={{ width: "40%" }}>
+						<th scope="col" className="stats">
 							Stats
 						</th>
 					</tr>

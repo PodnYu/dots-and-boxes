@@ -1,0 +1,14 @@
+#opponents-list {
+	grid-area: opponents-list;
+}
+
+/* .player {
+} */
+
+.nickname {
+	width: 25%;
+}
+
+.cell-center {
+	text-align: center;
+}

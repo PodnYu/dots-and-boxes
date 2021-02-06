@@ -4,10 +4,11 @@
   "description": "online game \"dots and boxes\"",
   "main": "server.js",
   "scripts": {
-    "start": "node js/server.js",
-    "server": "nodemon server.js",
+    "start": "node server.js",
+    "server": "nodemon --ignore sessions server.js",
     "client": "npm start --prefix client",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client-install": "npm install --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "PodnYu, AlexGLT",
   "license": "ISC",

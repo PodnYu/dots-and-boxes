@@ -1,0 +1,20 @@
+#lobbies-list-container {
+	grid-area: lobbies-list;
+	overflow-y: auto;
+}
+
+.row-no {
+	width: 10%;
+}
+
+.lobby-name {
+	width: 25%;
+}
+
+.players-count {
+	width: 25%;
+}
+
+.field-size {
+	width: 25%;
+}
