@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import { Table, Button } from "react-bootstrap";
 
@@ -11,12 +11,21 @@ import "../Common.css";
 
 import Modal from "../CreateGameModal/CreateGameModal.js";
 
+import { SocketContext } from "../../../App.js";
+
 export default function LobbiesList() {
 	let [modalView, setModalView] = useState(false);
+	const [lobbiesList, setLobbiesList] = useState({});
+
+	const socket = useContext(SocketContext);
 
 	const toggleModalView = () => {
 		setModalView(!modalView);
 	};
+	socket.on("lobbiesList", (lobbies) => {
+		setLobbiesList(lobbies);
+	});
+	console.log(lobbiesList);
 
 	return (
 		<>
@@ -44,6 +53,25 @@ export default function LobbiesList() {
 						</tr>
 					</thead>
 					<tbody>
+						{Object.values(lobbiesList).map((lobby, index) => {
+							return (
+								<tr key={lobby}>
+									<th scope="row" className="align-middle">
+										{index + 1}
+									</th>
+									<td className="align-middle">{lobby.name}</td>
+									<td className="align-middle">?/{lobby.playersCount}</td>
+									<td className="align-middle">
+										{lobby.width}x{lobby.height}
+									</td>
+									<td className="align-middle">
+										<Button variant="primary">Join</Button>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+					{/* <tbody>
 						<tr>
 							<th scope="row" className="align-middle">
 								1
@@ -77,7 +105,7 @@ export default function LobbiesList() {
 								<Button variant="primary">Join</Button>
 							</td>
 						</tr>
-					</tbody>
+					</tbody> */}
 				</Table>
 			</div>
 			{modalView && <Modal toggleModalView={toggleModalView} />}

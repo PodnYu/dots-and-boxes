@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Form, FormControl, Button } from "react-bootstrap";
 
@@ -9,9 +9,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CreateGameModal.css";
 import "../Common.css";
 
+import { SocketContext } from "../../../App.js";
+
 export default function CreateGameModal({ toggleModalView }) {
+	const socket = useContext(SocketContext);
+
 	const history = useHistory();
-	const parameters = { width: 2, height: 2, playerCount: 2, userType: "host" };
+	const parameters = { name: "", width: 2, height: 2, playersCount: 2, userType: "host" };
 
 	const createGameModalRef = useRef();
 
@@ -40,7 +44,7 @@ export default function CreateGameModal({ toggleModalView }) {
 					<Form>
 						<Form.Group>
 							<Form.Label htmlFor="lobby-name-input">Game name:</Form.Label>
-							<FormControl type="text" id="lobby-name-input" placeholder="lel?" />
+							<FormControl type="text" id="lobby-name-input" placeholder="lel?" onChange={updateLobbyName} />
 						</Form.Group>
 
 						<Form.Row>
@@ -56,13 +60,13 @@ export default function CreateGameModal({ toggleModalView }) {
 									onChange={(event) => {
 										parameters.width = +event.target.value;
 									}}>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
+									{new Array(7).fill("").map((_, index) => {
+										return (
+											<option key={index + 2} value={index + 2}>
+												{index + 2}
+											</option>
+										);
+									})}
 								</Form.Control>
 							</div>
 							<div className="col-3 my-1 align-center">
@@ -77,13 +81,13 @@ export default function CreateGameModal({ toggleModalView }) {
 									onChange={(event) => {
 										parameters.height = +event.target.value;
 									}}>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
+									{new Array(7).fill("").map((_, index) => {
+										return (
+											<option key={index + 2} value={index + 2}>
+												{index + 2}
+											</option>
+										);
+									})}
 								</Form.Control>
 							</div>
 							<div className="col-6 my-1 align-center">
@@ -97,32 +101,43 @@ export default function CreateGameModal({ toggleModalView }) {
 									className="mr-sm-2"
 									id="number-of-players-input"
 									onChange={(event) => {
-										parameters.playerCount = +event.target.value;
+										parameters.playersCount = +event.target.value;
 									}}>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
+									{new Array(3).fill("").map((_, index) => {
+										return (
+											<option key={index + 2} value={index + 2}>
+												{index + 2}
+											</option>
+										);
+									})}
 								</Form.Control>
 							</div>
 						</Form.Row>
 					</Form>
 				</div>
 				<div id="create-game-modal-footer" className="d-flex justify-content-end">
-					<Button
-						variant="primary"
-						id="create-game-button"
-						onClick={() => {
-							history.push({
-								pathname: "/lobby",
-								parameters: parameters,
-							});
-						}}>
+					<Button variant="primary" id="create-game-button" onClick={createLobby}>
 						<div>create</div>
 					</Button>
 				</div>
 			</div>
 		</div>
 	);
+
+	function updateLobbyName(event) {
+		parameters.name = event.target.value;
+	}
+
+	function createLobby() {
+		socket.emit("createLobby", parameters);
+
+		console.log("kek");
+
+		history.push({
+			pathname: "/lobby",
+			parameters: parameters,
+		});
+	}
 }
 
 CreateGameModal.propTypes = {

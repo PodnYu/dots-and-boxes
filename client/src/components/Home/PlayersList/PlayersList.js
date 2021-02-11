@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { Table } from "react-bootstrap";
 
 import PropTypes from "prop-types";
@@ -8,7 +8,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./PlayersList.css";
 import "../Common.css";
 
-export default function PlayerList() {
+import { SocketContext } from "../../../App.js";
+
+export default function PlayersList() {
+	const [playersList, setPlayersList] = useState({});
+
+	const socket = useContext(SocketContext);
+
+	socket.on("playersList", (players) => {
+		setPlayersList(players);
+	});
+
 	return (
 		<div id="online-players-list-container">
 			<Table>
@@ -26,27 +36,21 @@ export default function PlayerList() {
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<th scope="row">1</th>
-						<td>Mark</td>
-						<td>3/5</td>
-					</tr>
-					<tr>
-						<th scope="row">2</th>
-						<td>Telewisor</td>
-						<td>0/128</td>
-					</tr>
-					<tr>
-						<th scope="row">3</th>
-						<td>Larry</td>
-						<td>1/1</td>
-					</tr>
+					{Object.entries(playersList).map((player, index) => {
+						return (
+							<tr key={player}>
+								<th scope="row">{index + 1}</th>
+								<td>{player}</td>
+								<td>?/?</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</Table>
 		</div>
 	);
 }
 
-PlayerList.propTypes = {
+PlayersList.propTypes = {
 	socket: PropTypes.object,
 };
