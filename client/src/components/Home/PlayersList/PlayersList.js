@@ -1,6 +1,8 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 
+import PropTypes from "prop-types";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./PlayersList.css";
@@ -44,3 +46,7 @@ export default function PlayerList() {
 		</div>
 	);
 }
+
+PlayerList.propTypes = {
+	socket: PropTypes.object,
+};

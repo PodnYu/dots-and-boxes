@@ -4,7 +4,9 @@
 		"es2021": true,
 		"node": true
 	},
+	"plugins": ["react"],
 	"extends": ["eslint:recommended", "plugin:react/recommended"],
+
 	"parserOptions": {
 		"ecmaFeatures": {
 			"jsx": true,
@@ -13,7 +15,7 @@
 		"ecmaVersion": 2021,
 		"sourceType": "module"
 	},
-	"plugins": ["react"],
+
 	"rules": {
 		"indent": [
 			"warn",
@@ -25,7 +27,7 @@
 		"linebreak-style": ["warn", "windows"],
 		"quotes": ["warn", "double"],
 		"semi": ["warn", "always"],
-    "react/jsx-uses-vars": "error",
+		"react/jsx-uses-vars": "error",
 		"no-var": "error",
 		"no-unused-vars": "warn"
 	},

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { Table, Button } from "react-bootstrap";
 
+import PropTypes from "prop-types";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./LobbiesList.css";
@@ -9,11 +11,11 @@ import "../Common.css";
 
 import Modal from "../CreateGameModal/CreateGameModal.js";
 
-export default function LobbyList() {
-	let [showModal, setShowModal] = useState(false);
+export default function LobbiesList() {
+	let [modalView, setModalView] = useState(false);
 
 	const toggleModalView = () => {
-		setShowModal(!showModal);
+		setModalView(!modalView);
 	};
 
 	return (
@@ -78,7 +80,11 @@ export default function LobbyList() {
 					</tbody>
 				</Table>
 			</div>
-			{showModal && <Modal toggleModalView={toggleModalView} />}
+			{modalView && <Modal toggleModalView={toggleModalView} />}
 		</>
 	);
 }
+
+LobbiesList.propTypes = {
+	socket: PropTypes.object,
+};

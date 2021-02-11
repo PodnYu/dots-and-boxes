@@ -7,7 +7,13 @@ import GameField from "./GameField/GameField";
 import OpponentsList from "./OpponentsList/OpponentsList";
 
 export default function Lobby() {
-	let gameFieldParameters = useLocation().parameters;
+	const defaultParameters = {
+		width: 2,
+		height: 2,
+		playersCount: 2,
+	};
+
+	let gameFieldParameters = useLocation().parameters || defaultParameters;
 
 	return (
 		<div id="lobby-container">

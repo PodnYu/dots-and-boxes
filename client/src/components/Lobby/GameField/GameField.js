@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 import "./GameField.css";
 
 export default function GameField({ gameFieldParameters }) {
 	const [gameFieldState, setGameFieldState] = useState(gameFieldParameters);
-	const [animationState, setAnimationState] = useState(false);
+	const [animationState, setAnimationState] = useState(true);
+
+	const widthSelectorRef = useRef();
+	const heightSelectorRef = useRef();
+
+	const gameFieldRef = useRef();
+
+	useEffect(() => {
+		widthSelectorRef.current.value = gameFieldState.width;
+		heightSelectorRef.current.value = gameFieldState.height;
+	}, []);
 
 	let gameField = generateGameField(gameFieldState.width, gameFieldState.height);
 
@@ -20,29 +30,19 @@ export default function GameField({ gameFieldParameters }) {
 						Width
 					</Form.Label>
 					<Form.Control
+						ref={widthSelectorRef}
 						as="select"
 						custom
 						className="mr-sm-2"
 						id="field-height-select"
-						onChange={(event) => {
-							setAnimationState(true);
-
-							setTimeout(() => {
-								setGameFieldState({
-									width: +event.target.value,
-									height: +gameFieldState.height,
-									playerCount: +gameField.playerCount,
-								});
-							}, 500);
-						}}
-					>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
+						onChange={updateWidth}>
+						{new Array(7).fill("").map((_, index) => {
+							return (
+								<option key={index + 2} value={index + 2}>
+									{index + 2}
+								</option>
+							);
+						})}
 					</Form.Control>
 				</div>
 				<div className="d-flex flex-column align-items-center game-field-size-selector">
@@ -50,50 +50,58 @@ export default function GameField({ gameFieldParameters }) {
 						Height
 					</Form.Label>
 					<Form.Control
+						ref={heightSelectorRef}
 						as="select"
 						custom
 						className="mr-sm-2"
 						id="field-width-select"
-						onChange={(event) => {
-							setAnimationState(true);
-
-							setTimeout(() => {
-								setGameFieldState({
-									width: +gameFieldState.width,
-									height: +event.target.value,
-									playerCount: +gameField.playerCount,
-								});
-							}, 500);
-						}}
-					>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
+						onChange={updateHeight}>
+						{new Array(7).fill("").map((_, index) => {
+							return (
+								<option key={index + 2} value={index + 2}>
+									{index + 2}
+								</option>
+							);
+						})}
 					</Form.Control>
 				</div>
 			</div>
 
-			<SwitchTransition mode="out-in">
-				<CSSTransition
-					key={animationState}
-					appear={true}
-					timeout={500}
-					classNames="game-field"
-					onExited={() => {
-						setAnimationState(false);
-					}}
-				>
-					<div className={"d-flex flex-column justify-content-center align-items-center"} id="game-field">
-						{gameField}
-					</div>
-				</CSSTransition>
-			</SwitchTransition>
+			<CSSTransition
+				ref={gameFieldRef}
+				in={animationState}
+				appear={true}
+				timeout={500}
+				classNames="game-field"
+				onExited={() => {
+					setAnimationState(true);
+				}}>
+				<div className={"d-flex flex-column justify-content-center align-items-center"} id="game-field">
+					{gameField}
+				</div>
+			</CSSTransition>
 		</div>
 	);
+
+	function updateWidth(event) {
+		setAnimationState(false);
+
+		setTimeout(() => {
+			setGameFieldState((previousState) => {
+				return { ...previousState, width: +event.target.value };
+			});
+		}, 500);
+	}
+
+	function updateHeight(event) {
+		setAnimationState(false);
+
+		setTimeout(() => {
+			setGameFieldState((previousState) => {
+				return { ...previousState, height: +event.target.value };
+			});
+		}, 500);
+	}
 
 	function generateDot(id) {
 		return <div className="dot" id={`dot_${id.length == 1 ? "0" + id : id}`}></div>;
@@ -162,6 +170,6 @@ export default function GameField({ gameFieldParameters }) {
 	}
 }
 
-GameField.PropTypes = {
+GameField.propTypes = {
 	gameFieldParameters: PropTypes.objectOf(Number),
 };

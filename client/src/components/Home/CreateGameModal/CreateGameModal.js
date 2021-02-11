@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Form, FormControl, Button } from "react-bootstrap";
 
@@ -13,13 +13,13 @@ export default function CreateGameModal({ toggleModalView }) {
 	const history = useHistory();
 	const parameters = { width: 2, height: 2, playerCount: 2, userType: "host" };
 
-	useEffect(() => {
-		let createGameModal = document.getElementById("create-game-modal");
+	const createGameModalRef = useRef();
 
+	useEffect(() => {
 		window.addEventListener(
 			"click",
 			(event) => {
-				if (event.target == createGameModal) {
+				if (event.target == createGameModalRef.current) {
 					toggleModalView();
 				}
 			},
@@ -28,7 +28,7 @@ export default function CreateGameModal({ toggleModalView }) {
 	});
 
 	return (
-		<div id="create-game-modal">
+		<div ref={createGameModalRef} id="create-game-modal">
 			<div id="modal-content">
 				<span id="close-modal-span" onClick={toggleModalView}>
 					&times;
@@ -55,8 +55,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									id="field-width-select"
 									onChange={(event) => {
 										parameters.width = +event.target.value;
-									}}
-								>
+									}}>
 									<option value="2">2</option>
 									<option value="3">3</option>
 									<option value="4">4</option>
@@ -77,8 +76,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									id="field-height-select"
 									onChange={(event) => {
 										parameters.height = +event.target.value;
-									}}
-								>
+									}}>
 									<option value="2">2</option>
 									<option value="3">3</option>
 									<option value="4">4</option>
@@ -100,8 +98,7 @@ export default function CreateGameModal({ toggleModalView }) {
 									id="number-of-players-input"
 									onChange={(event) => {
 										parameters.playerCount = +event.target.value;
-									}}
-								>
+									}}>
 									<option value="2">2</option>
 									<option value="3">3</option>
 									<option value="4">4</option>
@@ -119,8 +116,7 @@ export default function CreateGameModal({ toggleModalView }) {
 								pathname: "/lobby",
 								parameters: parameters,
 							});
-						}}
-					>
+						}}>
 						<div>create</div>
 					</Button>
 				</div>
@@ -129,6 +125,6 @@ export default function CreateGameModal({ toggleModalView }) {
 	);
 }
 
-CreateGameModal.PropTypes = {
+CreateGameModal.propTypes = {
 	toggleModalView: PropTypes.func.isRequired,
 };

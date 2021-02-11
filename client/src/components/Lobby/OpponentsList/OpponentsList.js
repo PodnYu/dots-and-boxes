@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 export default function OpponentsList() {
 	return (
-		<Table id="opponents-list" class="table w-50">
+		<Table id="opponents-list" className="table">
 			<thead>
 				<tr className="player">
 					<th scope="col">Player</th>
@@ -74,7 +74,7 @@ export default function OpponentsList() {
 	);
 }
 
-OpponentsList.PropTypes = {
+OpponentsList.propTypes = {
 	userType: PropTypes.string.isRequired,
 };
 
