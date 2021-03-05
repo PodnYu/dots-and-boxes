@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useContext } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { Form, FormControl, Button } from "react-bootstrap";
+import { Form, FormControl, Button, Modal } from "react-bootstrap";
 
 import PropTypes from "prop-types";
 
@@ -11,127 +11,56 @@ import "../Common.css";
 
 import { SocketContext } from "../../../App.js";
 
-export default function CreateGameModal({ toggleModalView }) {
+import GameParametersSelector from "./GameParametersSelector/GameParametersSelector.js";
+
+export default function CreateGameModal({ modalView, setModalView }) {
 	const socket = useContext(SocketContext);
 
 	const history = useHistory();
+
 	const parameters = { name: "", width: 2, height: 2, playersCount: 2, userType: "host" };
 
-	const createGameModalRef = useRef();
-
-	useEffect(() => {
-		window.addEventListener(
-			"click",
-			(event) => {
-				if (event.target == createGameModalRef.current) {
-					toggleModalView();
-				}
-			},
-			{ once: true },
-		);
-	});
+	function setParameter(parameter, value) {
+		parameters[parameter] = value;
+	}
 
 	return (
-		<div ref={createGameModalRef} id="create-game-modal">
-			<div id="modal-content">
-				<span id="close-modal-span" onClick={toggleModalView}>
-					&times;
-				</span>
-				<div id="create-game-modal-header">
-					<h2>Configure your game</h2>
-				</div>
-				<div id="create-game-modal-body">
-					<Form>
-						<Form.Group>
-							<Form.Label htmlFor="lobby-name-input">Game name:</Form.Label>
-							<FormControl type="text" id="lobby-name-input" placeholder="lel?" onChange={updateLobbyName} />
-						</Form.Group>
-
-						<Form.Row>
-							<div className="col-3 my-1 align-center">
-								<Form.Label className="mr-sm-2" htmlFor="field-width-select">
-									Width
-								</Form.Label>
-								<Form.Control
-									as="select"
-									custom
-									className="mr-sm-2"
-									id="field-width-select"
-									onChange={(event) => {
-										parameters.width = +event.target.value;
-									}}>
-									{new Array(7).fill("").map((_, index) => {
-										return (
-											<option key={index + 2} value={index + 2}>
-												{index + 2}
-											</option>
-										);
-									})}
-								</Form.Control>
-							</div>
-							<div className="col-3 my-1 align-center">
-								<Form.Label className="mr-sm-2" htmlFor="field-height-select">
-									Height
-								</Form.Label>
-								<Form.Control
-									as="select"
-									custom
-									className="mr-sm-2"
-									id="field-height-select"
-									onChange={(event) => {
-										parameters.height = +event.target.value;
-									}}>
-									{new Array(7).fill("").map((_, index) => {
-										return (
-											<option key={index + 2} value={index + 2}>
-												{index + 2}
-											</option>
-										);
-									})}
-								</Form.Control>
-							</div>
-							<div className="col-6 my-1 align-center">
-								<Form.Label className="mr-sm-2" htmlFor="number-of-players-input">
-									{" "}
-									Number of players
-								</Form.Label>
-								<Form.Control
-									as="select"
-									custom
-									className="mr-sm-2"
-									id="number-of-players-input"
-									onChange={(event) => {
-										parameters.playersCount = +event.target.value;
-									}}>
-									{new Array(3).fill("").map((_, index) => {
-										return (
-											<option key={index + 2} value={index + 2}>
-												{index + 2}
-											</option>
-										);
-									})}
-								</Form.Control>
-							</div>
-						</Form.Row>
-					</Form>
-				</div>
-				<div id="create-game-modal-footer" className="d-flex justify-content-end">
-					<Button variant="primary" id="create-game-button" onClick={createLobby}>
-						<div>create</div>
-					</Button>
-				</div>
-			</div>
-		</div>
+		<Modal show={modalView} onHide={() => setModalView(false)} id="create-game-modal">
+			<Modal.Header closeButton>
+				<Modal.Title>Configure your game</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form id="create-game-modal-body">
+					<Form.Group>
+						<Form.Label htmlFor="lobby-name-input">Game name:</Form.Label>
+						<FormControl type="text" id="lobby-name-input" placeholder="lel?" onChange={updateLobbyName} />
+					</Form.Group>
+					<Form.Row>
+						<GameParametersSelector parameterNameValues={["Width", "width", "width"]} optionsCount={8} setParameter={setParameter} />
+						<GameParametersSelector parameterNameValues={["Height", "height", "height"]} optionsCount={8} setParameter={setParameter} />
+						<GameParametersSelector
+							parameterNameValues={["Number of players", "players-count", "playersCount"]}
+							optionsCount={4}
+							setParameter={setParameter}
+							columnSize={6}
+						/>
+					</Form.Row>
+				</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button variant="primary" onClick={createLobby}>
+					Create Lobby
+				</Button>
+			</Modal.Footer>
+		</Modal>
 	);
 
 	function updateLobbyName(event) {
-		parameters.name = event.target.value;
+		setParameter("name", event.target.value);
 	}
 
 	function createLobby() {
 		socket.emit("createLobby", parameters);
-
-		console.log("kek");
 
 		history.push({
 			pathname: "/lobby",
@@ -141,5 +70,6 @@ export default function CreateGameModal({ toggleModalView }) {
 }
 
 CreateGameModal.propTypes = {
-	toggleModalView: PropTypes.func.isRequired,
+	modalView: PropTypes.bool.isRequired,
+	setModalView: PropTypes.func.isRequired,
 };

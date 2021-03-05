@@ -11,7 +11,7 @@ import Lobby from "./components/Lobby/Lobby.js";
 
 export const SocketContext = React.createContext();
 
-const socket = io("http://localhost:8000");
+const socket = io("http://localhost:5005");
 
 export default function App() {
 	return (

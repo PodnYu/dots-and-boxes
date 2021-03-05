@@ -9,23 +9,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./LobbiesList.css";
 import "../Common.css";
 
-import Modal from "../CreateGameModal/CreateGameModal.js";
+import CreateGameModal from "../CreateGameModal/CreateGameModal.js";
 
 import { SocketContext } from "../../../App.js";
 
 export default function LobbiesList() {
-	let [modalView, setModalView] = useState(false);
 	const [lobbiesList, setLobbiesList] = useState({});
+
+	const [createGameModalView, setCreateGameModalView] = useState(false);
 
 	const socket = useContext(SocketContext);
 
-	const toggleModalView = () => {
-		setModalView(!modalView);
-	};
 	socket.on("lobbiesList", (lobbies) => {
 		setLobbiesList(lobbies);
 	});
-	console.log(lobbiesList);
 
 	return (
 		<>
@@ -46,7 +43,7 @@ export default function LobbiesList() {
 								Field
 							</th>
 							<th scope="col" className="align-middle">
-								<Button variant="success" id="open-create-game-modal-button" onClick={toggleModalView}>
+								<Button variant="success" id="open-create-game-modal-button" onClick={() => setCreateGameModalView(true)}>
 									Create
 								</Button>
 							</th>
@@ -71,44 +68,9 @@ export default function LobbiesList() {
 							);
 						})}
 					</tbody>
-					{/* <tbody>
-						<tr>
-							<th scope="row" className="align-middle">
-								1
-							</th>
-							<td className="align-middle">kek</td>
-							<td className="align-middle">3/4</td>
-							<td className="align-middle">3x4</td>
-							<td className="align-middle">
-								<Button variant="primary">Join</Button>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row" className="align-middle">
-								2
-							</th>
-							<td className="align-middle">Flex</td>
-							<td className="align-middle">1/4</td>
-							<td className="align-middle">5x5</td>
-							<td className="align-middle">
-								<Button variant="primary">Join</Button>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row" className="align-middle">
-								3
-							</th>
-							<td className="align-middle">Chill</td>
-							<td className="align-middle">1/3</td>
-							<td className="align-middle">5x7</td>
-							<td className="align-middle">
-								<Button variant="primary">Join</Button>
-							</td>
-						</tr>
-					</tbody> */}
 				</Table>
 			</div>
-			{modalView && <Modal toggleModalView={toggleModalView} />}
+			<CreateGameModal modalView={createGameModalView} setModalView={setCreateGameModalView} />
 		</>
 	);
 }

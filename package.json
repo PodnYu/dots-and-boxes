@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "online game \"dots and boxes\"",
 	"main": "server.js",
-	"type": "module",
 	"scripts": {
 		"start": "node server.js",
 		"server": "nodemon --ignore sessions server.js",
