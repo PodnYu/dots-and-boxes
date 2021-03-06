@@ -17,7 +17,7 @@ const socket = io("http://localhost:5005");
 
 export default function App() {
 
-	const [nickname, setNickname] = React.useState("keks");
+	const [nickname, setNickname] = React.useState("");
 
 	React.useEffect(() => {
 		console.log("nickname: ", nickname);
@@ -30,8 +30,8 @@ export default function App() {
 			updateNickname: setNickname
 		}}>
 			<BrowserRouter>
-				<ProtectedRoute exact path="/" component={Home} />
-				<ProtectedRoute exact path="/lobby" component={Lobby} />
+				<ProtectedRoute exact path="/" component={Home} auth={nickname != ""} />
+				<ProtectedRoute exact path="/lobby" component={Lobby} auth={nickname != ""} />
 				<Route exact path="/login" component={Auth} />
 			</BrowserRouter>
 		</PlayerContext.Provider>

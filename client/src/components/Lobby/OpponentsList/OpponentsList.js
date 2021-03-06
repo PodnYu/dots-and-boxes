@@ -74,10 +74,6 @@ export default function OpponentsList() {
 	);
 }
 
-OpponentsList.propTypes = {
-	userType: PropTypes.string.isRequired,
-};
-
 function colorSelectorListener(event) {
 	let color = event.target.value;
 	let playerRow = event.target.parentElement.parentElement;

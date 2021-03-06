@@ -11,13 +11,31 @@ import "../Common.css";
 import { PlayerContext } from "../../../App.js";
 
 export default function PlayersList() {
-	const [playersList, setPlayersList] = useState({});
+	const [playersList, setPlayersList] = useState([]);
 
-	const { socket } = useContext(PlayerContext);
+	const { socket, nickname } = useContext(PlayerContext);
 
-	socket.on("playersList", (players) => {
-		setPlayersList(players);
+	socket.on("playerJoin", ({ nickname }) => {
+		console.log("playerJoin");
+		setPlayersList([...playersList, nickname]);
 	});
+
+	socket.on("playerLeave", ({ nickname }) => {
+		console.log("playerLeave");
+		setPlayersList(prevList => prevList.filter(player => player != nickname));
+	});
+
+	React.useEffect(() => {
+		console.log("playersList has changed: ", playersList);
+	}, [playersList]);
+
+	React.useEffect(() => {
+		console.log("init useEffect");
+		socket.emit("createPlayer", { nickname }, response => {
+			console.log("inside createPlayer callback: ", response);
+			setPlayersList(response.playersList);
+		});
+	}, []);
 
 	return (
 		<div id="online-players-list-container">
@@ -36,9 +54,9 @@ export default function PlayersList() {
 					</tr>
 				</thead>
 				<tbody>
-					{Object.entries(playersList).map((player, index) => {
+					{playersList.map((player, index) => {
 						return (
-							<tr key={player}>
+							<tr key={player} className={nickname == player ? "self-row" : ""}>
 								<th scope="row">{index + 1}</th>
 								<td>{player}</td>
 								<td>?/?</td>

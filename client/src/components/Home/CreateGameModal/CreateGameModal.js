@@ -18,7 +18,7 @@ export default function CreateGameModal({ modalView, setModalView }) {
 
 	const history = useHistory()
 ;
-	const parameters = { name: "", width: 2, height: 2, playersCount: 2, userType: "host" };
+	const parameters = { name: "", width: 2, height: 2, playersCount: 2 };
 
 	function setParameter(parameter, value) {
 		parameters[parameter] = value;
