@@ -9,15 +9,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CreateGameModal.css";
 import "../Common.css";
 
-import { SocketContext } from "../../../App.js";
+import { PlayerContext } from "../../../App.js";
 
 import GameParametersSelector from "./GameParametersSelector/GameParametersSelector.js";
 
 export default function CreateGameModal({ modalView, setModalView }) {
-	const socket = useContext(SocketContext);
+	const { socket } = useContext(PlayerContext);
 
-	const history = useHistory();
-
+	const history = useHistory()
+;
 	const parameters = { name: "", width: 2, height: 2, playersCount: 2, userType: "host" };
 
 	function setParameter(parameter, value) {

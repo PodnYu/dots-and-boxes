@@ -8,12 +8,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./PlayersList.css";
 import "../Common.css";
 
-import { SocketContext } from "../../../App.js";
+import { PlayerContext } from "../../../App.js";
 
 export default function PlayersList() {
 	const [playersList, setPlayersList] = useState({});
 
-	const socket = useContext(SocketContext);
+	const { socket } = useContext(PlayerContext);
 
 	socket.on("playersList", (players) => {
 		setPlayersList(players);

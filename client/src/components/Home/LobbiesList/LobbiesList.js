@@ -11,14 +11,14 @@ import "../Common.css";
 
 import CreateGameModal from "../CreateGameModal/CreateGameModal.js";
 
-import { SocketContext } from "../../../App.js";
+import { PlayerContext } from "../../../App.js";
 
 export default function LobbiesList() {
 	const [lobbiesList, setLobbiesList] = useState({});
 
 	const [createGameModalView, setCreateGameModalView] = useState(false);
 
-	const socket = useContext(SocketContext);
+	const { socket } = useContext(PlayerContext);
 
 	socket.on("lobbiesList", (lobbies) => {
 		setLobbiesList(lobbies);

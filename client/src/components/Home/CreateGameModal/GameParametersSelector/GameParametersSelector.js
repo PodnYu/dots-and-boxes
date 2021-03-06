@@ -25,7 +25,6 @@ export default function GameParametersSelector({ parameterNameValues, optionsCou
 					);
 				})}
 			</Form.Control>
-			{/* </div> */}
 		</Form.Group>
 	);
 }
