@@ -19,10 +19,6 @@ export default function App() {
 
 	const [nickname, setNickname] = React.useState("");
 
-	React.useEffect(() => {
-		console.log("nickname: ", nickname);
-	}, [nickname]);
-
 	return (
 		<PlayerContext.Provider value={{
 			socket,

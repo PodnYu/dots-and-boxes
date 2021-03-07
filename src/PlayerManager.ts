@@ -26,10 +26,11 @@ export class PlayerManager {
     this.players = this.players.filter(player => player.socket.id != socketId);
   }
 
-  getPlayerBySocketId(socketId: string): Player {
+  getPlayerBySocketId(socketId: string) {
     let player = this.players.find(player => player.socket.id == socketId);
     if (!player) {
-      throw new Error(`Player with socketid[${socketId}] not found!`);
+      // throw new Error(`Player with socketid[${socketId}] not found!`);
+      return null;
     }
 
     return player;

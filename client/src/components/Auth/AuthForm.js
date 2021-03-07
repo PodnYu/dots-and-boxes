@@ -13,7 +13,7 @@ import { Redirect } from "react-router";
 
 export default function AuthModal() {
 
-	const {updateNickname, socket, nickname: kek} = React.useContext(PlayerContext);
+	const {updateNickname, socket, nickname: currentNickname} = React.useContext(PlayerContext);
 	const [nickname, setNickname] = React.useState("");
 	const [nicknameError, setNicknameError] = React.useState(false);
 
@@ -29,8 +29,15 @@ export default function AuthModal() {
 
 	} 
 
-	if (kek != "") {
+	if (currentNickname != "") {
 		return <Redirect to="/" />
+	}
+
+	const onKeyPressed = (e) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			trySetNickname(nickname);
+		}
 	}
 
 	return (
@@ -41,7 +48,13 @@ export default function AuthModal() {
 					<Form>
 						<Form.Group>
 							<Form.Label>Enter your nickname:</Form.Label>
-							<Form.Control type="text" placeholder="nickname" maxLength="16" autoFocus required onChange={(e) => setNickname(e.target.value)} />                        
+							<Form.Control 
+								type="text" 
+								placeholder="nickname" 
+								maxLength="16" 
+								onKeyPress={onKeyPressed}
+								onChange={(e) => setNickname(e.target.value)}
+								autoFocus required  />                        
 						</Form.Group>
 						<Button block onClick={() => trySetNickname(nickname)}>Submit</Button>
 					</Form>

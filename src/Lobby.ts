@@ -12,7 +12,6 @@ export default class Lobby {
   height: number;
 
   constructor(name: string, host: Player, width: number, height: number, playerCount: number) {
-    console.log("players: ", playerManager.players);
     this.name = name;
     this.host = host;
     this.players = [host];

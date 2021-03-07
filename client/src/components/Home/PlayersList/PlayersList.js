@@ -12,30 +12,35 @@ import { PlayerContext } from "../../../App.js";
 
 export default function PlayersList() {
 	const [playersList, setPlayersList] = useState([]);
-
 	const { socket, nickname } = useContext(PlayerContext);
-
-	socket.on("playerJoin", ({ nickname }) => {
-		console.log("playerJoin");
-		setPlayersList([...playersList, nickname]);
-	});
-
-	socket.on("playerLeave", ({ nickname }) => {
-		console.log("playerLeave");
-		setPlayersList(prevList => prevList.filter(player => player != nickname));
-	});
 
 	React.useEffect(() => {
 		console.log("playersList has changed: ", playersList);
 	}, [playersList]);
 
 	React.useEffect(() => {
-		console.log("init useEffect");
+		console.log("init PlayersList render");
+
+		socket.on("playerJoin", ({ nickname }) => {
+			console.log("playerJoin: ", nickname);
+			setPlayersList(prevList => [...prevList, nickname]);
+		});
+	
+		socket.on("playerLeave", ({ nickname }) => {
+			console.log("playerLeave: ", nickname);
+			setPlayersList(prevList => prevList.filter(player => player != nickname));
+		});	
+
+
 		socket.emit("createPlayer", { nickname }, response => {
 			console.log("inside createPlayer callback: ", response);
 			setPlayersList(response.playersList);
 		});
 	}, []);
+
+	// React.useEffect(() => {
+	// 	console.log("PlayersList render");
+	// });
 
 	return (
 		<div id="online-players-list-container">

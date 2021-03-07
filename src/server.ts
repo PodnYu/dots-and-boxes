@@ -16,7 +16,7 @@ const homeRoom: string[] = [];
 const lobbies: { [key: string]: any } = {};
 
 io.on("connection", (socket: Socket) => {
-	console.log(`User[${socket.id}] connected`);
+	console.log(`Player[${socket.id}] connected`);
 
 	socket.on("nicknameAvailable", ({ nickname }, cb) => {
 		let nicknameAvailable = playerManager.isNicknameAvailable(nickname);
@@ -25,20 +25,22 @@ io.on("connection", (socket: Socket) => {
 	});
 
 	socket.on("createPlayer", ({ nickname }, cb) => {
-		console.log(`User[${nickname}] created`);
+		console.log(`Player[${nickname}] created`);
 		playerManager.addPlayer(socket, nickname);
 		socket.to("home").emit("playerJoin", { nickname });
 		socket.join("home");
 		cb({ playersList: playerManager.getNames() });
 	});
-
+	
 	socket.on("createLobby", ({ name, width, height, playersCount }) => {
 		console.log("Lobby created:");
 		console.log(`\tname: ${name}`);
 		console.log(`\twidth: ${width}`);
 		console.log(`\theight: ${height}`);
 		console.log(`\tplayerCount: ${playersCount}`);
-		lobbies[name] = new Lobby(name, playerManager.getPlayerBySocketId(socket.id), width, height, playersCount);
+		let player = playerManager.getPlayerBySocketId(socket.id);
+		if (player)
+			lobbies[name] = new Lobby(name, player, width, height, playersCount);
 	});
 
 
@@ -46,9 +48,11 @@ io.on("connection", (socket: Socket) => {
 
 	socket.on("disconnect", function () {
 		console.log(`User[${socket.id}] disconnected`);
-		let playerNickname = playerManager.getPlayerBySocketId(socket.id).nickname;
+		let player = playerManager.getPlayerBySocketId(socket.id);
+		if (!player)
+			return;
 		playerManager.removePlayerBySocketId(socket.id);
-		io.to("home").emit("playerLeave", { nickname: playerNickname });
+		io.to("home").emit("playerLeave", { nickname: player.nickname });
 	});
 
 });
