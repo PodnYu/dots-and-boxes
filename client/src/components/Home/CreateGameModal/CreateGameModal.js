@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, FormControl, Button, Modal } from "react-bootstrap";
 
 import PropTypes from "prop-types";
@@ -9,15 +9,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CreateGameModal.css";
 import "../Common.css";
 
-import { PlayerContext } from "../../../App.js";
+import { PlayerContext } from "../../../App";
 
-import GameParametersSelector from "./GameParametersSelector/GameParametersSelector.js";
+import GameParametersSelector from "./GameParametersSelector/GameParametersSelector";
 
 export default function CreateGameModal({ modalView, setModalView }) {
 	const { socket } = useContext(PlayerContext);
 
-	const history = useHistory()
-;
 	const parameters = { name: "", width: 2, height: 2, playersCount: 2 };
 
 	function setParameter(parameter, value) {
@@ -48,9 +46,11 @@ export default function CreateGameModal({ modalView, setModalView }) {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant="primary" onClick={createLobby}>
-					Create Lobby
-				</Button>
+				<Link to={{ pathname: "/lobby", parameters }}>
+					<Button variant="primary" onClick={createLobby}>
+						Create Lobby
+					</Button>
+				</Link>
 			</Modal.Footer>
 		</Modal>
 	);
@@ -61,11 +61,6 @@ export default function CreateGameModal({ modalView, setModalView }) {
 
 	function createLobby() {
 		socket.emit("createLobby", parameters);
-
-		history.push({
-			pathname: "/lobby",
-			parameters: parameters,
-		});
 	}
 }
 

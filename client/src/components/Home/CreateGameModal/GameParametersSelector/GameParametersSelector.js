@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import range from "../../../range";
+
 export default function GameParametersSelector({ parameterNameValues, optionsCount, setParameter, columnSize = 3 }) {
 	return (
 		<Form.Group as={Col} xs={columnSize}>
@@ -17,10 +19,10 @@ export default function GameParametersSelector({ parameterNameValues, optionsCou
 				onChange={(event) => {
 					setParameter(parameterNameValues[2], +event.target.value);
 				}}>
-				{[...Array(optionsCount - 1).keys()].map((_, index) => {
+				{range(2, optionsCount).map((item) => {
 					return (
-						<option key={index + 2} value={index + 2}>
-							{index + 2}
+						<option key={item} value={item}>
+							{item}
 						</option>
 					);
 				})}

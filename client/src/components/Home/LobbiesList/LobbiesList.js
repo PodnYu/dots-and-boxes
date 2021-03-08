@@ -11,7 +11,7 @@ import "../Common.css";
 
 import CreateGameModal from "../CreateGameModal/CreateGameModal.js";
 
-import { PlayerContext } from "../../../App.js";
+import { PlayerContext } from "../../../App";
 
 export default function LobbiesList() {
 	const [lobbiesList, setLobbiesList] = useState({});

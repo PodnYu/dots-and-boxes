@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./PlayersList.css";
 import "../Common.css";
 
-import { PlayerContext } from "../../../App.js";
+import { PlayerContext } from "../../../App";
 
 export default function PlayersList() {
 	const [playersList, setPlayersList] = useState([]);
@@ -23,24 +23,19 @@ export default function PlayersList() {
 
 		socket.on("playerJoin", ({ nickname }) => {
 			console.log("playerJoin: ", nickname);
-			setPlayersList(prevList => [...prevList, nickname]);
+			setPlayersList((prevList) => [...prevList, nickname]);
 		});
-	
+
 		socket.on("playerLeave", ({ nickname }) => {
 			console.log("playerLeave: ", nickname);
-			setPlayersList(prevList => prevList.filter(player => player != nickname));
-		});	
+			setPlayersList((prevList) => prevList.filter((player) => player != nickname));
+		});
 
-
-		socket.emit("createPlayer", { nickname }, response => {
+		socket.emit("createPlayer", { nickname }, (response) => {
 			console.log("inside createPlayer callback: ", response);
 			setPlayersList(response.playersList);
 		});
 	}, []);
-
-	// React.useEffect(() => {
-	// 	console.log("PlayersList render");
-	// });
 
 	return (
 		<div id="online-players-list-container">

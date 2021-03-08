@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Home.css";
 
-import PlayersList from "./PlayersList/PlayersList.js";
+import PlayersList from "./PlayersList/PlayersList";
 import LobbiesList from "./LobbiesList/LobbiesList";
 
 export default function Home() {
