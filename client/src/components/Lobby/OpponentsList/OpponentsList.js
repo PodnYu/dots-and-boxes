@@ -1,8 +1,6 @@
 import React from "react";
 import { Table, Form } from "react-bootstrap";
 
-import PropTypes from "prop-types";
-
 export default function OpponentsList() {
 	return (
 		<Table id="opponents-list" className="table">

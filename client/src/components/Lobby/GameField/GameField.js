@@ -1,15 +1,18 @@
-import React, { useState } from "react";
-import { Form } from "react-bootstrap";
-
+import React, { useState, useContext } from "react";
 import { CSSTransition } from "react-transition-group";
+import { Form } from "react-bootstrap";
 
 import "./GameField.css";
 
-import generateGameField from "./GameFieldGenerating";
-
 import range from "../../range";
 
-export default function GameField({ gameFieldParameters }) {
+import generateGameField from "./GameFieldGenerating";
+
+import { PlayerContext } from "../../../App";
+
+export default function GameField({ isPlayerHost, gameFieldParameters }) {
+	const { socket } = useContext(PlayerContext);
+
 	const [animationState, setAnimationState] = useState(true);
 
 	const [fieldParameters] = useState({ ...gameFieldParameters });
@@ -21,12 +24,14 @@ export default function GameField({ gameFieldParameters }) {
 		<div id="game-field-container">
 			<div className="d-inline-flex justify-content-center" id="game-field-size-selectors-container">
 				<GameFieldParameterSelector
+					isPlayerHost={isPlayerHost}
 					selectorName={"Width"}
 					selectorParameter={"width"}
 					fieldParameters={fieldParameters}
 					updateParameter={updateParameter}
 				/>
 				<GameFieldParameterSelector
+					isPlayerHost={isPlayerHost}
 					selectorName={"Height"}
 					selectorParameter={"height"}
 					fieldParameters={fieldParameters}
@@ -53,11 +58,13 @@ export default function GameField({ gameFieldParameters }) {
 
 	function updateParameter(parameter, parameterValue) {
 		sizeSelectorsValue[parameter] = parameterValue;
+
+		socket.emit("fieldParametersChanged", fieldParameters);
 		setAnimationState(false);
 	}
 }
 
-function GameFieldParameterSelector({ selectorName: name, selectorParameter: parameter, fieldParameters, updateParameter }) {
+function GameFieldParameterSelector({ isPlayerHost, selectorName: name, selectorParameter: parameter, fieldParameters, updateParameter }) {
 	return (
 		<div className="d-flex flex-column align-items-center game-field-size-selector">
 			<Form.Label className="mr-sm-2" htmlFor={`field-${parameter}-select`}>
@@ -65,6 +72,7 @@ function GameFieldParameterSelector({ selectorName: name, selectorParameter: par
 			</Form.Label>
 			<Form.Control
 				as="select"
+				disabled={!isPlayerHost}
 				custom
 				className="mr-sm-2"
 				id={`field-${parameter}-select`}

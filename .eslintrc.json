@@ -31,7 +31,6 @@
 		"quotes": ["warn", "double"],
 		"semi": ["warn", "always"],
 		"no-var": "error",
-		"no-unused-vars": "warn",
 		"constructor-super": "off", // ts(2335) & ts(2377)
 		"getter-return": "off", // ts(2378)
 		"no-const-assign": "off", // ts(2588)
@@ -51,8 +50,9 @@
 		"prefer-const": "error", // ts provides better types with const
 		"prefer-rest-params": "error", // ts provides better types with rest args over arguments
 		"prefer-spread": "error", // ts transpiles spread to apply, so no need for manual apply
-		"valid-typeof": "off"
+		"valid-typeof": "off",
+		"@typescript-eslint/no-floating-promises": "off"
 		// "@typescript-eslint/no-unsafe-assignment": "off"
-		// // "@typescript-eslint/no-var-requires": "off"
+		// "@typescript-eslint/no-var-requires": "off"
 	}
 }

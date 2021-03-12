@@ -1,8 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Table } from "react-bootstrap";
 
-import PropTypes from "prop-types";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./PlayersList.css";
@@ -21,19 +19,24 @@ export default function PlayersList() {
 	React.useEffect(() => {
 		console.log("init PlayersList render");
 
-		socket.on("playerJoin", ({ nickname }) => {
-			console.log("playerJoin: ", nickname);
+		socket.emit("getPlayersList", (response) => {
+			console.log("inside playerCreated callback: ", response);
+			setPlayersList(response.playersList);
+		});
+
+		socket.on("playerEntered", ({ nickname }) => {
+			console.log("playerEntered: ", nickname);
 			setPlayersList((prevList) => [...prevList, nickname]);
 		});
 
-		socket.on("playerLeave", ({ nickname }) => {
-			console.log("playerLeave: ", nickname);
-			setPlayersList((prevList) => prevList.filter((player) => player != nickname));
+		socket.on("playerJoined", ({ nickname }) => {
+			console.log("playerJoined: ", nickname);
+			setPlayersList((prevList) => prevList.filter((playerNickname) => playerNickname != nickname));
 		});
 
-		socket.emit("createPlayer", { nickname }, (response) => {
-			console.log("inside createPlayer callback: ", response);
-			setPlayersList(response.playersList);
+		socket.on("playerExited", ({ nickname }) => {
+			console.log("playerExited: ", nickname);
+			setPlayersList((prevList) => prevList.filter((player) => player != nickname));
 		});
 	}, []);
 
@@ -68,7 +71,3 @@ export default function PlayersList() {
 		</div>
 	);
 }
-
-PlayersList.propTypes = {
-	socket: PropTypes.object,
-};

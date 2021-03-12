@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Col } from "react-bootstrap";
-import PropTypes from "prop-types";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -30,10 +29,3 @@ export default function GameParametersSelector({ parameterNameValues, optionsCou
 		</Form.Group>
 	);
 }
-
-GameParametersSelector.propTypes = {
-	parameterNameValues: PropTypes.array,
-	optionsCount: PropTypes.number.isRequired,
-	setParameter: PropTypes.func.isRequired,
-	columnSize: PropTypes.number,
-};

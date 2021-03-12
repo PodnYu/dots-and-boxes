@@ -1,8 +1,5 @@
-import React, { useState, useContext } from "react";
-
+import React, { useState, useEffect, useContext } from "react";
 import { Table, Button } from "react-bootstrap";
-
-import PropTypes from "prop-types";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -14,15 +11,26 @@ import CreateGameModal from "../CreateGameModal/CreateGameModal.js";
 import { PlayerContext } from "../../../App";
 
 export default function LobbiesList() {
-	const [lobbiesList, setLobbiesList] = useState({});
+	const [lobbiesList, setLobbiesList] = useState([]);
 
 	const [createGameModalView, setCreateGameModalView] = useState(false);
 
 	const { socket } = useContext(PlayerContext);
 
-	socket.on("lobbiesList", (lobbies) => {
-		setLobbiesList(lobbies);
-	});
+	useEffect(() => {
+		socket.emit("getLobbiesList", ({ lobbiesList }) => {
+			console.log(lobbiesList);
+			setLobbiesList(lobbiesList);
+		});
+
+		socket.on("lobbyCreated", (lobby) => {
+			setLobbiesList((prevList) => [...prevList, lobby]);
+		});
+
+		socket.on("lobbyStopped", ({ name }) => {
+			setLobbiesList((prevList) => prevList.filter((lobby) => lobby.name != name));
+		});
+	}, []);
 
 	return (
 		<>
@@ -62,7 +70,9 @@ export default function LobbiesList() {
 										{lobby.width}x{lobby.height}
 									</td>
 									<td className="align-middle">
-										<Button variant="primary">Join</Button>
+										<Button id={"join-button-" + index} variant="primary">
+											Join
+										</Button>
 									</td>
 								</tr>
 							);
@@ -74,7 +84,3 @@ export default function LobbiesList() {
 		</>
 	);
 }
-
-LobbiesList.propTypes = {
-	socket: PropTypes.object,
-};

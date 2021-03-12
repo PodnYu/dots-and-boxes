@@ -22,12 +22,16 @@ function generateVerticalLine(edgesCount, lineNo) {
 		let dotNo = dotsCount * lineNo + j;
 
 		verticalLineItems.push(generateEdge(dotNo, dotNo + dotsCount, "vertical"));
-		verticalLineItems.push(generateSquare());
+		verticalLineItems.push(generateSquare(dotNo));
 	}
 
 	verticalLineItems.push(generateEdge(dotsCount * lineNo + edgesCount, dotsCount * (lineNo + 1) + edgesCount, "vertical"));
 
-	return <div className="d-inline-flex">{verticalLineItems}</div>;
+	return (
+		<div key={`verticalLine_${lineNo}`} className="d-inline-flex">
+			{verticalLineItems}
+		</div>
+	);
 }
 
 function generateHorizontalLine(edgesCount, lineNo) {
@@ -44,22 +48,26 @@ function generateHorizontalLine(edgesCount, lineNo) {
 
 	horizontalLineItems.push(generateDot(dotsCount * lineNo + edgesCount));
 
-	return <div className="d-inline-flex">{horizontalLineItems}</div>;
+	return (
+		<div key={`horizontalLine_${lineNo}`} className="d-inline-flex">
+			{horizontalLineItems}
+		</div>
+	);
 }
 
 function generateEdge(firstDot, secondDot, plane) {
 	switch (plane) {
 		case "vertical":
-			return <div className="edge-vertical" id={`edge_${firstDot}_${secondDot}`}></div>;
+			return <div key={`edge_${firstDot}_${secondDot}`} className="edge-vertical" id={`edge_${firstDot}_${secondDot}`}></div>;
 		case "horizontal":
-			return <div className="edge-horizontal" id={`edge_${firstDot}_${secondDot}`}></div>;
+			return <div key={`edge_${firstDot}_${secondDot}`} className="edge-horizontal" id={`edge_${firstDot}_${secondDot}`}></div>;
 	}
 }
 
-function generateSquare() {
-	return <div className="square"></div>;
+function generateSquare(dotNo) {
+	return <div key={`square_${dotNo}`} className="square"></div>;
 }
 
 function generateDot(id) {
-	return <div className="dot" id={`dot_${id.length == 1 ? "0" + id : id}`}></div>;
+	return <div key={`dot_${id.length == 1 ? "0" + id : id}`} className="dot" id={`dot_${id.length == 1 ? "0" + id : id}`}></div>;
 }
