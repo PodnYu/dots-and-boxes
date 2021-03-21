@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
-import "./Lobby.css";
+import "./css/Lobby.css";
 
-import GameField from "./GameField/GameField";
-import OpponentsList from "./OpponentsList/OpponentsList";
+import GameField from "./GameField";
+import OpponentsList from "./OpponentsList";
 
 import { PlayerContext } from "../../App";
 

@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Table, Button } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import "./LobbiesList.css";
-import "../Common.css";
+import "./css/LobbiesList.css";
+import "./css/Common.css";
 
-import CreateGameModal from "../CreateGameModal/CreateGameModal.js";
+import CreateGameModal from "./CreateGameModal";
 
-import { PlayerContext } from "../../../App";
+import { PlayerContext } from "../../App";
 
 export default function LobbiesList() {
 	const [lobbiesList, setLobbiesList] = useState([]);

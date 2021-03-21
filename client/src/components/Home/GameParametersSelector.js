@@ -1,9 +1,8 @@
-import React from "react";
 import { Form, Col } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import range from "../../../range";
+import range from "../../Utils/range";
 
 export default function GameParametersSelector({ parameterNameValues, optionsCount, setParameter, columnSize = 3 }) {
 	return (

@@ -1,14 +1,14 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Form } from "react-bootstrap";
 
-import "./GameField.css";
+import "./css/GameField.css";
 
-import range from "../../range";
+import range from "../../Utils/range";
 
 import generateGameField from "./GameFieldGenerating";
 
-import { PlayerContext } from "../../../App";
+import { PlayerContext } from "../../App";
 
 export default function GameField({ isPlayerHost, gameFieldParameters }) {
 	const { socket } = useContext(PlayerContext);

@@ -1,8 +1,9 @@
-import React, { useEffect, useContext } from "react";
-import "./Home.css";
+import { useEffect, useContext } from "react";
 
-import PlayersList from "./PlayersList/PlayersList";
-import LobbiesList from "./LobbiesList/LobbiesList";
+import "./css/Home.css";
+
+import PlayersList from "./PlayersList";
+import LobbiesList from "./LobbiesList";
 
 import { PlayerContext } from "../../App";
 

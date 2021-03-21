@@ -1,4 +1,4 @@
-import React from "react";
+import { createContext, useState } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,10 +11,10 @@ import Lobby from "./components/Lobby/Lobby";
 import io from "socket.io-client";
 const socket = io("http://localhost:5005");
 
-export const PlayerContext = React.createContext();
+export const PlayerContext = createContext();
 
 export default function App() {
-	const [nickname, setNickname] = React.useState("");
+	const [nickname, setNickname] = useState("");
 
 	return (
 		<PlayerContext.Provider value={{ socket, nickname, setNickname }}>

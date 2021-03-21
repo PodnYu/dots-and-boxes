@@ -1,22 +1,22 @@
-import React, { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Table } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import "./PlayersList.css";
-import "../Common.css";
+import "./css/PlayersList.css";
+import "./css/Common.css";
 
-import { PlayerContext } from "../../../App";
+import { PlayerContext } from "../../App";
 
 export default function PlayersList() {
 	const [playersList, setPlayersList] = useState([]);
 	const { socket, nickname } = useContext(PlayerContext);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		console.log("playersList has changed: ", playersList);
 	}, [playersList]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		console.log("init PlayersList render");
 
 		socket.emit("getPlayersList", (response) => {

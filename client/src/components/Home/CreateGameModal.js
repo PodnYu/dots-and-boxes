@@ -1,15 +1,12 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Form, FormControl, Button, Modal } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import "./CreateGameModal.css";
-import "../Common.css";
+import GameParametersSelector from "./GameParametersSelector";
 
-import GameParametersSelector from "./GameParametersSelector/GameParametersSelector";
-
-import { PlayerContext } from "../../../App";
+import { PlayerContext } from "../../App";
 
 export default function CreateGameModal({ modalView, setModalView }) {
 	const { socket } = useContext(PlayerContext);
