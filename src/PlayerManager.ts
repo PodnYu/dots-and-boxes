@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { lobbyManager } from "./LobbyManager";
 import Player from "./Player";
 
 export class PlayerManager {
@@ -19,15 +20,23 @@ export class PlayerManager {
 	}
 
 	setLobby(socketId: string, lobby: string): void {
-		this.players[socketId].lobby = lobby;
+		this.players[socketId].lobbyName = lobby;
+	}
+
+	getPlayers(): Player[] {
+		return Object["values"](this.players);
 	}
 
 	getNames(): string[] {
-		return Object["values"](this.players).map((player) => player.nickname);
+		return this.getPlayers().map(player => player.nickname);
 	}
 
 	isNicknameAvailable(nickname: string): boolean {
 		return !this.getNames().includes(nickname);
+	}
+
+	getPlayersWithoutLobbies(): Player[] {
+		return this.getPlayers().filter(player => player.lobbyName === "");
 	}
 }
 

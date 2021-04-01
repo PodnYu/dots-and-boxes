@@ -1,73 +1,79 @@
-import { Table, Form } from "react-bootstrap";
+import { Table, Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 export default function OpponentsList() {
 	return (
-		<Table id="opponents-list" className="table">
-			<thead>
-				<tr className="player">
-					<th scope="col">Player</th>
-					<th scope="col" className="text-center align-middle">
-						Color
-					</th>
-					<th scope="col" className="text-center align-middle">
-						Score
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr className="player" id="player_1">
-					<td className="align-middle nickname">John Kek</td>
-					<td className="align-middle">
-						<Form.Control as="select" custom id="select_1" onChange={colorSelectorListener}>
-							<option value="none">Choose...</option>
-							<option value="blue" className="alert-primary">
-								Blue
-							</option>
-							<option value="green" className="alert-success">
-								Green
-							</option>
-							<option value="yellow" className="alert-warning">
-								Yellow
-							</option>
-							<option value="red" className="alert-danger">
-								Red
-							</option>
-						</Form.Control>
-					</td>
-					<td className="text-center align-middle">0</td>
-				</tr>
-				<tr className="player" id="player_2">
-					<td className="align-middle nickname">
-						<Form.Control as="select" custom id="select_1">
-							<option value="closed">Closed</option>
-							<option value="opened">Opened</option>
-						</Form.Control>
-					</td>
-					<td className="align-middle"></td>
-					<td className="text-center align-middle">0</td>
-				</tr>
-				<tr className="player" id="player_3">
-					<td className="align-middle nickname">
-						<Form.Control as="select" custom id="select_1">
-							<option value="closed">Closed</option>
-							<option value="opened">Opened</option>
-						</Form.Control>
-					</td>
-					<td className="align-middle"></td>
-					<td className="text-center align-middle">0</td>
-				</tr>
-				<tr className="player" id="player_4">
-					<td className="nickname align-middle">
-						<Form.Control as="select" custom id="select_1">
-							<option value="closed">Closed</option>
-							<option value="opened">Opened</option>
-						</Form.Control>
-					</td>
-					<td className="align-middle"></td>
-					<td className="text-center align-middle">0</td>
-				</tr>
-			</tbody>
-		</Table>
+		<>
+			<Table id="opponents-list" className="table">
+				<thead>
+					<tr className="player">
+						<th scope="col">Player</th>
+						<th scope="col" className="text-center align-middle">
+							Color
+						</th>
+						<th scope="col" className="text-center align-middle">
+							Score
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr className="player" id="player_1">
+						<td className="align-middle nickname">John Kek</td>
+						<td className="align-middle">
+							<Form.Control as="select" custom id="select_1" onChange={colorSelectorListener}>
+								<option value="none">Choose...</option>
+								<option value="blue" className="alert-primary">
+									Blue
+								</option>
+								<option value="green" className="alert-success">
+									Green
+								</option>
+								<option value="yellow" className="alert-warning">
+									Yellow
+								</option>
+								<option value="red" className="alert-danger">
+									Red
+								</option>
+							</Form.Control>
+						</td>
+						<td className="text-center align-middle">0</td>
+					</tr>
+					<tr className="player" id="player_2">
+						<td className="align-middle nickname">
+							<Form.Control as="select" custom id="select_1">
+								<option value="closed">Closed</option>
+								<option value="opened">Opened</option>
+							</Form.Control>
+						</td>
+						<td className="align-middle"></td>
+						<td className="text-center align-middle">0</td>
+					</tr>
+					<tr className="player" id="player_3">
+						<td className="align-middle nickname">
+							<Form.Control as="select" custom id="select_1">
+								<option value="closed">Closed</option>
+								<option value="opened">Opened</option>
+							</Form.Control>
+						</td>
+						<td className="align-middle"></td>
+						<td className="text-center align-middle">0</td>
+					</tr>
+					<tr className="player" id="player_4">
+						<td className="nickname align-middle">
+							<Form.Control as="select" custom id="select_1">
+								<option value="closed">Closed</option>
+								<option value="opened">Opened</option>
+							</Form.Control>
+						</td>
+						<td className="align-middle"></td>
+						<td className="text-center align-middle">0</td>
+					</tr>
+				</tbody>
+			</Table>
+			<Link to="/" style={{ display: "flex", flexDirection: "row", justifyContent: "end", marginBottom: "auto", width: "100%" }}>
+				<Button>Go Back</Button>
+			</Link>
+		</>
 	);
 }
 

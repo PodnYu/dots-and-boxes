@@ -22,17 +22,17 @@ const io = new Server(server, { cors: { origin: "*" } });
 io.on("connection", (socket: Socket) => {
 	console.log(`Player[${socket.id}] connected`);
 
-	socket.on("createPlayer", ({ nickname }: { nickname: string }, cb) => {
+	socket.on("createPlayer", ({ nickname }: { nickname: string }, cb: (obj: {ok: boolean}) => void) => {
 		const nicknameAvailable = playerManager.isNicknameAvailable(nickname);
 
-		console.log(`is nickname available[${nickname}: ${nicknameAvailable}].`);
-		cb({ ok: nicknameAvailable });
-
+		console.log(`is nickname available[${nickname}: ${nicknameAvailable.toString()}].`);
+		
 		if (nicknameAvailable) {
 			console.log(`Player[${nickname}] created`);
-
 			playerManager.addPlayer(socket, nickname);
 		}
+
+		cb({ ok: nicknameAvailable });
 	});
 
 	socket.on("enterPlayer", () => {
@@ -45,18 +45,17 @@ io.on("connection", (socket: Socket) => {
 		socket.to("home").emit("playerEntered", { nickname: player.nickname });
 	});
 
-	socket.on("getPlayersList", (cb) => {
-		cb({ playersList: playerManager.getNames() });
+	socket.on("getPlayersList", (cb: (obj: unknown) => void) => {
+		cb({ playersList: playerManager.getPlayersWithoutLobbies().map(player => player.nickname) });
 	});
 
-	socket.on("getLobbiesList", (cb) => {
-		cb({ lobbiesList: lobbyManager.getLobbiesList() });
+	socket.on("getLobbiesList", (cb: (obj: unknown) => void) => {
+		cb({ lobbiesList: lobbyManager.getLobbiesParameters() });
 	});
 
-	socket.on("createLobby", ({ name, width, height, playersCount }: IGameParameters, cb) => {
+	socket.on("createLobby", ({ name, width, height, playersCount }: IGameParameters, cb: (obj: { ok: boolean }) => void) => {
 		if (!lobbyManager.isNameAvailable(name)) {
 			cb({ ok: false });
-
 			return;
 		}
 
@@ -69,33 +68,41 @@ io.on("connection", (socket: Socket) => {
 		const player = playerManager.getPlayer(socket.id);
 		if (player) lobbyManager.addLobby(name, player, width, height, playersCount);
 
-		socket.to("home").emit("lobbyCreated", { name, width, height, playersCount });
+		socket.to("home").emit("lobbyCreated", { lobby: lobbyManager.getLobbyParameters(name) });
+		socket.to("home").emit("playerJoined", { nickname: player.nickname });
 
 		cb({ ok: true });
 	});
 
-	socket.on("joinPlayer", ({ name }: { name: string }, cb) => {
+	socket.on("joinPlayer", ({ name }: { name: string }, cb: (obj: unknown) => void) => {
 		const player = playerManager.getPlayer(socket.id);
-		if (player) socket.to("home").emit("playerJoined", { nickname: player.nickname });
+		if (player) {
+			player.lobbyName = name;
+			socket.to("home").emit("playerJoined", { nickname: player.nickname }); 
+		}
 
-		const isLobbyExisted = lobbyManager.isLobbyExisted(name);
+		const lobbyExists = lobbyManager.lobbyExists(name);
+		const lobbyAvailable = lobbyManager.lobbyAvailable(name);
 
-		if (isLobbyExisted) {
+		if (lobbyExists && lobbyAvailable) {
 			socketLeave("home");
 			socketJoin(name);
 
 			cb({
-				status: isLobbyExisted,
+				status: lobbyExists,
 				fieldParameters: lobbyManager.getLobbyParameters(name),
 				playersParameters: lobbyManager.getPlayersParameters(name),
 			});
-		} else cb({ status: isLobbyExisted });
+		} else cb({ status: lobbyExists });
 	});
 
 	socket.on("leavePlayer", () => {
 		const player = playerManager.getPlayer(socket.id);
 
-		if (player) socketLeave(playerManager.getPlayer(socket.id).lobby);
+		if (player) {
+			socketLeave(playerManager.getPlayer(socket.id).lobbyName); 
+			player.lobbyName = "";
+		}
 	});
 
 	socket.on("disconnect", function () {
@@ -104,7 +111,7 @@ io.on("connection", (socket: Socket) => {
 		const player = playerManager.getPlayer(socket.id);
 		if (!player) return;
 
-		socketLeave(playerManager.getPlayer(socket.id).lobby);
+		socketLeave(playerManager.getPlayer(socket.id).lobbyName);
 
 		socket.to("home").emit("playerExited", { nickname: player.nickname });
 		playerManager.removePlayer(socket.id);
@@ -112,30 +119,32 @@ io.on("connection", (socket: Socket) => {
 
 	function socketJoin(lobbyName: string) {
 		socket.join(lobbyName);
-		playerManager.setLobby(socket.id, lobbyName);
+		playerManager.setLobby(socket.id, lobbyName === "home" ? "" : lobbyName);
 	}
 
 	function socketLeave(lobbyName: string) {
+
+		console.log(`socketLeave[${socket.id}] from lobby ${lobbyName}.`);
+
 		if (lobbyName) socket.leave(lobbyName);
 		else return;
 
 		if (lobbyName != "home") {
 			const lobby = lobbyManager.getLobby(lobbyName);
+			if (!lobby) return;
 
-			if (lobby.host == playerManager.getPlayer(socket.id)) {
+			if (lobby.isPlayerHost(playerManager.getPlayer(socket.id))) {
 				socket.to("home").emit("lobbyStopped", { name: lobby.name });
 
-				socket.to(lobby.name).emit("hostLeaved");
+				socket.to(lobby.name).emit("hostLeft");
 
 				lobbyManager.removeLobby(lobby.name);
 			} else {
-				socket.to(lobby.name).emit("playerLeaved");
+				socket.to(lobby.name).emit("playerLeft");
 			}
 		}
 	}
 });
-
-console.log("");
 
 server.listen(PORT, () => {
 	console.log(`Listening on 127.0.0.1:${PORT}...`);

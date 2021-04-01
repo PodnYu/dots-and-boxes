@@ -56,7 +56,7 @@ export default function CreateGameModal({ modalView, setModalView }) {
 	function createLobby() {
 		socket.emit("createLobby", fieldParameters, (status) => {
 			if (status.ok) {
-				history.push(`/lobby/${fieldParameters.name}`);
+				history.push(`/lobby/${fieldParameters.name}`, { isHost: true, fieldParameters });
 			}
 		});
 	}

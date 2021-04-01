@@ -12,45 +12,75 @@ export default function Lobby(props) {
 	const { socket } = useContext(PlayerContext);
 	const { nickname } = useContext(PlayerContext);
 
-	const [isPlayerHost, setIsPlayerHost] = useState(null);
+	// const [isPlayerHost, setIsPlayerHost] = useState(null);
 
-	const history = useHistory();
+	// const history = useHistory();
 
-	const [lobbyExisting, setLobbyExisting] = useState(null);
+	// const [lobbyExisting, setLobbyExisting] = useState(null);
 
-	const [lobbyParameters] = useState({});
+	// const [lobbyParameters] = useState({});
+	
+	let isHost = props.location.state.isHost;
+	let fieldParameters = props.location.state.fieldParameters;
 
 	useEffect(() => {
-		socket.emit("joinPlayer", { name: props.match.params.name }, (response) => {
-			if (response.status) {
-				lobbyParameters.fieldParameters = response.fieldParameters;
-				lobbyParameters.playersParameters = response.fieldParameters;
+		console.log("props: ", props);
 
-				setIsPlayerHost(nickname == lobbyParameters.fieldParameters.host);
+		if (isHost === undefined) {
+			socket.emit("joinPlayer", { name: props.match.params.name }, (response) => {
+				console.log("joinPlayer response: ", response);
+				// if (response.status) {
 
-				setLobbyExisting(true);
-			} else setLobbyExisting(false);
-		});
+				// }
+			});
+		}
+
+		// socket.emit("joinPlayer", { name: props.match.params.name }, (response) => {
+		// 	if (response.status) {
+		// 		lobbyParameters.fieldParameters = response.fieldParameters;
+		// 		lobbyParameters.playersParameters = response.fieldParameters;
+
+		// 		setIsPlayerHost(nickname == lobbyParameters.fieldParameters.host);
+
+		// 		setLobbyExisting(true);
+		// 	} else setLobbyExisting(false);
+		// });
 
 		return () => {
+			console.log("Lobby unmount");
 			socket.emit("leavePlayer");
 		};
 	}, []);
 
-	if (lobbyExisting === true)
+	if (isHost) {
 		return (
 			<div id="lobby-container">
-				<GameField isPlayerHost={isPlayerHost} gameFieldParameters={lobbyParameters.fieldParameters} />
-				<OpponentsList isPlayerHost={isPlayerHost} playersParameters={lobbyParameters.playersParameters} />
+				<GameField isPlayerHost={isHost} gameFieldParameters={fieldParameters} />
+				<OpponentsList isPlayerHost={isHost} playersParameters={{}} />
 			</div>
 		);
-	else if (lobbyExisting === false) {
-		setTimeout(() => {
-			history.push("/");
-		}, 2000);
-
-		return <h1>De bil, huli</h1>;
 	} else {
-		return <h1>Wait a minute...</h1>;
+		return (
+			<div id="lobby-container">
+				You&apos;re not the host
+			</div>
+		);
 	}
+
+	// if (lobbyExisting === true)
+	// 	return (
+	// 		<div id="lobby-container">
+	// 			<GameField isPlayerHost={isPlayerHost} gameFieldParameters={lobbyParameters.fieldParameters} />
+	// 			<OpponentsList isPlayerHost={isPlayerHost} playersParameters={lobbyParameters.playersParameters} />
+	// 		</div>
+	// 	);
+	// else if (lobbyExisting === false) {
+	// 	setTimeout(() => {
+	// 		history.push("/");
+	// 	}, 2000);
+
+	// 	return <h1>De bil, huli</h1>;
+	// } else {
+	// 	return <h1>Wait a minute...</h1>;
+	// }
 }

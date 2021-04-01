@@ -20,7 +20,7 @@ export default function PlayersList() {
 		console.log("init PlayersList render");
 
 		socket.emit("getPlayersList", (response) => {
-			console.log("inside playerCreated callback: ", response);
+			console.log("inside playersList callback: ", response);
 			setPlayersList(response.playersList);
 		});
 

@@ -19,11 +19,12 @@ export default function LobbiesList() {
 
 	useEffect(() => {
 		socket.emit("getLobbiesList", ({ lobbiesList }) => {
-			console.log(lobbiesList);
+			console.log("lobbiesList: ", lobbiesList);
 			setLobbiesList(lobbiesList);
 		});
 
-		socket.on("lobbyCreated", (lobby) => {
+		socket.on("lobbyCreated", ({ lobby }) => {
+			console.log("lobbyCreated: ", lobby);
 			setLobbiesList((prevList) => [...prevList, lobby]);
 		});
 
@@ -42,6 +43,9 @@ export default function LobbiesList() {
 								#
 							</th>
 							<th scope="col" className="align-middle lobby-name">
+								Player Nickname
+							</th>
+							<th scope="col" className="align-middle lobby-name">
 								Lobby Name
 							</th>
 							<th scope="col" className="align-middle text-align-center players-count">
@@ -58,14 +62,15 @@ export default function LobbiesList() {
 						</tr>
 					</thead>
 					<tbody>
-						{Object.values(lobbiesList).map((lobby, index) => {
+						{lobbiesList.map((lobby, index) => {
 							return (
 								<tr key={lobby}>
 									<th scope="row" className="align-middle">
 										{index + 1}
 									</th>
+									<td className="align-middle">{lobby.hostNickname}</td>
 									<td className="align-middle">{lobby.name}</td>
-									<td className="align-middle">?/{lobby.playersCount}</td>
+									<td className="align-middle">{lobby.playersCount}/{lobby.availablePlacesCount}</td>
 									<td className="align-middle">
 										{lobby.width}x{lobby.height}
 									</td>
