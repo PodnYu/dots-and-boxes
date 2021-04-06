@@ -49,10 +49,27 @@ export default function LobbiesList() {
 			});
 		});
 
+		socket.on("fieldParametersChanged", ({ lobbyName, width, height }) => {
+			console.log("fieldParametersChanged: ", lobbyName, width, height);
+			setLobbiesList(oldLobbiesList => {
+				const newLobbiesList = [ ...oldLobbiesList ];
+				const lobby = newLobbiesList.find(lobby => lobby.name === lobbyName);
+				
+				if (!lobby)
+					return oldLobbiesList;
+
+				lobby.width = width;
+				lobby.height = height;
+
+				return newLobbiesList;
+			});
+		});
+
 		return () => {
 			socket.off("lobbyCreated");
 			socket.off("lobbyStopped");
 			socket.off("placeChanged");
+			socket.off("fieldParametersChanged");
 		};
 	}, []);
 

@@ -18,7 +18,7 @@ export class LobbyManager {
 	addLobby(name: string, player: Player, width: number, height: number, playersCount: number): void {
 		this.lobbies[name] = new Lobby(name, player, width, height, playersCount);
 
-		player.lobbyName = name;
+		player.setLobbyName(name);
 	}
 
 	getLobby(name: string): Lobby {

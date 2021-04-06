@@ -3,12 +3,11 @@ import { PlayerContext } from "../../App";
 import { Table, Form, Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import "./css/OpponentsList.css";
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 
 export default function OpponentsList(props) {
 	const { socket, nickname } = useContext(PlayerContext);
 
-	const [players, setPlayers] = useState(props.playersParameters);
+	const [places, setPlaces] = useState(props.playersParameters);
 
 	const history = useHistory();
 
@@ -22,31 +21,31 @@ export default function OpponentsList(props) {
 			for (let i = 1; i < 4; ++i) {
 				playersParameters.push({ opened: props.placesCount > i ? true : false, playerNickname: null, color: null });
 			}
-			setPlayers(playersParameters);
+			setPlaces(playersParameters);
 		}
 
 		socket.on("lobby/playerJoined", ({ playerNickname, placeIndex, color }) => {
 			console.log("lobby/playerJoined: ", playerNickname, placeIndex, color);
-			setPlayers(oldPlayers => {
+			setPlaces(oldPlaces => {
 				console.log("\tplayerJoined");
-				const newPlayers = [ ...oldPlayers ];
-				newPlayers[placeIndex] = { opened: true, playerNickname, color };
-				return newPlayers;
+				const newPlaces = [ ...oldPlaces ];
+				newPlaces[placeIndex] = { opened: true, playerNickname, color };
+				return newPlaces;
 			});
 		});
 
 		socket.on("lobby/playerLeft", ({ playerNickname }) => {
 			console.log("lobby/playerLeft: ", playerNickname);
-			setPlayers(oldPlayers => {
-				const newPlayers = [...oldPlayers];
-				const index = newPlayers.findIndex(player => player.playerNickname === playerNickname);
+			setPlaces(oldPlaces => {
+				const newPlaces = [...oldPlaces];
+				const index = newPlaces.findIndex(place => place.playerNickname === playerNickname);
 
 				if (index === -1)
-					return oldPlayers;
+					return oldPlaces;
 
-				newPlayers[index] = { opened: true, playerNickname: null, color: null };
+				newPlaces[index] = { opened: true, playerNickname: null, color: null };
 
-				return newPlayers;
+				return newPlaces;
 			});
 		});
 
@@ -77,12 +76,12 @@ export default function OpponentsList(props) {
 		const playerIndex = e.target.id.split("-")[1];
 		const placeOpened = e.target.value === "opened" ? true : false;
 
-		setPlayers(oldPlayers => {
-			const newPlayers = [ ...oldPlayers ];
-			newPlayers[playerIndex].opened = placeOpened;
-			newPlayers[playerIndex].playerNickname = null;
-			newPlayers[playerIndex].color = null;
-			return newPlayers;
+		setPlaces(oldPlaces => {
+			const newPlaces = [ ...oldPlaces ];
+			newPlaces[playerIndex].opened = placeOpened;
+			newPlaces[playerIndex].playerNickname = null;
+			newPlaces[playerIndex].color = null;
+			return newPlaces;
 		});
 
 		socket.emit("lobby/placeChanged", { 
@@ -141,7 +140,7 @@ export default function OpponentsList(props) {
 				</thead>
 				<tbody>
 
-					{players.map((place, index) => {
+					{places.map((place, index) => {
 						return place.playerNickname === nickname ? (
 							getSelfRow(index)
 						) : (

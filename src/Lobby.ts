@@ -6,13 +6,10 @@ export default class Lobby {
 	name: string;
 
 	host: Player;
-	// players: (Player | null)[] = [];
 
 	width: number;
 	height: number;
 
-	freePlacesCount: number;
-	playersCount: number;
 	static maxPlayersCount = 4;
 
 	places: {
@@ -26,15 +23,8 @@ export default class Lobby {
 		this.name = name;
 		this.host = host;
 
-		// this.players.push(host);
-		// for (let i = 1; i < 4; i++) {
-		// 	this.players.push(emptyPlayer);
-		// }
-
 		this.width = width;
 		this.height = height;
-		this.freePlacesCount = playersCount - 1;
-		this.playersCount = playersCount;
 		this.isStarted = false;
 
 		this.places.push({ opened: true, player: host });
@@ -45,6 +35,11 @@ export default class Lobby {
 
 			this.places.push({ opened, player: null });
 		}
+	}
+
+	setSize(width: number, height: number): void {
+		this.width = width;
+		this.height = height;
 	}
 
 	getAvailablePlacesCount(): number {

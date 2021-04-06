@@ -18,8 +18,8 @@ export class PlayerManager {
 		return this.players[socketId];
 	}
 
-	setLobby(socketId: string, lobby: string): void {
-		this.players[socketId].lobbyName = lobby;
+	setLobby(socketId: string, lobbyName: string): void {
+		this.players[socketId].setLobbyName(lobbyName);
 	}
 
 	getPlayers(): Player[] {

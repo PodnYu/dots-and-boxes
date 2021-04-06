@@ -16,4 +16,8 @@ export default class Player {
 		this.lobbyName = "";
 		this.color = null;
 	}
+
+	setLobbyName(lobbyName: string): void {
+		this.lobbyName = lobbyName;
+	}
 }

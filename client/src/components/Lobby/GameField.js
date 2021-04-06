@@ -1,10 +1,10 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Form } from "react-bootstrap";
 
 import "./css/GameField.css";
 
-import range from "../../Utils/range";
+import range from "../../utils/range";
 
 import generateGameField from "./GameFieldGenerating";
 
@@ -20,6 +20,17 @@ export default function GameField({ isPlayerHost, gameFieldParameters }) {
 	const [sizeSelectorsValue] = useState({ ...gameFieldParameters });
 
 	const gameField = generateGameField(fieldParameters.width, fieldParameters.height);
+
+	useEffect(() => {
+		socket.on("lobby/fieldParametersChanged", ({ width, height }) => {
+			console.log("lobby/fieldParametersChanged: ", width, height);
+			updateParameters(width, height);
+		});
+
+		return () => {
+			socket.off("lobby/fieldParametersChanged");
+		};
+	}, []);
 
 	return (
 		<div id="game-field-container">
@@ -60,7 +71,18 @@ export default function GameField({ isPlayerHost, gameFieldParameters }) {
 	function updateParameter(parameter, parameterValue) {
 		sizeSelectorsValue[parameter] = parameterValue;
 
-		socket.emit("fieldParametersChanged", fieldParameters);
+		socket.emit("lobby/fieldParametersChanged", { 
+			lobbyName: sizeSelectorsValue.name,
+			width: sizeSelectorsValue.width,
+			height: sizeSelectorsValue.height	
+		});
+		setAnimationState(false);
+	}
+
+	function updateParameters(width, height) {
+		sizeSelectorsValue.width = width;
+		sizeSelectorsValue.height = height;
+
 		setAnimationState(false);
 	}
 }

@@ -98,7 +98,7 @@ io.on("connection", (socket: Socket) => {
 				return;
 			}
 			
-			player.lobbyName = name;
+			player.setLobbyName(name);
 			socket.leave("home");
 			socketJoin(name);
 
@@ -126,7 +126,7 @@ io.on("connection", (socket: Socket) => {
 
 		if (player) {
 			socketLeave(player.lobbyName); 
-			player.lobbyName = "";
+			player.setLobbyName("");
 		}
 	});
 
@@ -167,6 +167,25 @@ io.on("connection", (socket: Socket) => {
 		cb({ ok: true });
 	});
 
+	socket.on("lobby/fieldParametersChanged", ({ lobbyName, width, height }: { lobbyName: string, width: number, height: number }) => {
+		console.log("lobby/fieldParametersChanged: ", lobbyName, width, height);
+		const lobby = lobbyManager.getLobby(lobbyName);
+
+		if (!lobby)
+			return;
+
+		lobby.setSize(width, height);
+		socket.to(lobby.name).emit("lobby/fieldParametersChanged", {
+			width,
+			height
+		});
+		socket.to("home").emit("fieldParametersChanged", {
+			lobbyName,
+			width,
+			height
+		});
+	});
+
 	socket.on("disconnect", function () {
 		console.log(`User[${socket.id}] disconnected`);
 
@@ -199,8 +218,6 @@ io.on("connection", (socket: Socket) => {
 				socket.to("home").emit("lobbyStopped", { name: lobby.name });
 
 				socket.to(lobby.name).emit("lobby/hostLeft");
-
-				// lobby.getPlayers().forEach(player => { player.socket?.leave(lobby.name); });
 
 				lobbyManager.removeLobby(lobby.name);
 			} else {
