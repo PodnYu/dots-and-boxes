@@ -38,8 +38,12 @@ export default class Lobby {
 		this.isStarted = false;
 
 		this.places.push({ opened: true, player: host });
-		for (let i = 0; i < 3; ++i) {
-			this.places.push({ opened: true, player: null });
+		for (let i = 1; i < Lobby.maxPlayersCount; ++i) {
+			let opened = true;
+			if (i >= playersCount)
+				opened = false;
+
+			this.places.push({ opened, player: null });
 		}
 	}
 
@@ -62,6 +66,35 @@ export default class Lobby {
 		return this.places;
 	}
 
+	getPlace(index: number): {
+		opened: boolean,
+		player: Player | null
+	} {
+		return this.places[index];
+	}
+
+	addPlayer(player: Player): number {
+		let placeIndex = -1;
+		for (let i = 0; i < this.places.length; ++i) {
+			if (this.places[i].opened && this.places[i].player === null) {
+				this.places[i].player = player;
+				placeIndex = i;
+				break;
+			}
+		}
+
+		return placeIndex;
+	}
+
+	removePlayer(player: Player): void {
+		const place = this.places.find(place => place.player?.nickname === player.nickname);
+		if (!place)
+			return;
+
+		place.opened = true;
+		place.player = null;
+	}
+
 	/*
 		this way or having separate this.players: Player[] array.
 	*/
@@ -73,5 +106,9 @@ export default class Lobby {
 
 	isPlayerHost(player: Player): boolean {
 		return this.host.nickname === player.nickname;
+	}
+
+	getPlacesCount(): number {
+		return this.places.reduce((acc, el) => el.opened ? acc + 1 : acc, 0);
 	}
 }

@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
-		"server": "nodemon --ignore sessions server.js",
+		"server": "tsc && node js/server.js",
 		"client": "npm start --prefix client",
 		"client-install": "npm install --prefix client",
 		"dev": "concurrently --kill-others \"tsc -w\" \"nodemon js/server.js\" \"npm run client\""

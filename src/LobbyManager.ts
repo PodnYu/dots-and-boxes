@@ -7,7 +7,7 @@ interface ILobbyParameters {
 	width: number;
 	height: number;
 	playersCount: number;
-	availablePlacesCount: number;
+	placesCount: number;
 }
 
 export class LobbyManager {
@@ -50,6 +50,10 @@ export class LobbyManager {
 	}
 
 	removeLobby(lobbyName: string): void {
+		const lobby = this.lobbies[lobbyName];
+		if (!lobby)
+			return;
+
 		delete this.lobbies[lobbyName];
 	}
 
@@ -72,7 +76,7 @@ export class LobbyManager {
 			height: lobby.height,
 			hostNickname: lobby.host.nickname,
 			playersCount: lobby.getPlayersCount(),
-			availablePlacesCount: lobby.getAvailablePlacesCount()
+			placesCount: lobby.getPlacesCount()
 		};
 	}
 
@@ -96,8 +100,9 @@ export class LobbyManager {
 		return this.lobbies[name] !== undefined;
 	}
 
-	lobbyAvailable(name: string): boolean {
-		return this.lobbies[name].isAvailable();
+	isLobbyAvailable(name: string): boolean {
+		const lobby = this.lobbies[name];
+		return lobby ? lobby.isAvailable() : false;
 	}
 
 	getLobbyPlayers(name: string): Player[] {

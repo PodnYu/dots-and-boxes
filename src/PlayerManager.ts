@@ -1,5 +1,4 @@
 import { Socket } from "socket.io";
-import { lobbyManager } from "./LobbyManager";
 import Player from "./Player";
 
 export class PlayerManager {

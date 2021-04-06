@@ -11,6 +11,7 @@ import generateGameField from "./GameFieldGenerating";
 import { PlayerContext } from "../../App";
 
 export default function GameField({ isPlayerHost, gameFieldParameters }) {
+	
 	const { socket } = useContext(PlayerContext);
 
 	const [animationState, setAnimationState] = useState(true);

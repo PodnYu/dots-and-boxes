@@ -12,3 +12,16 @@
 .cell-center {
 	text-align: center;
 }
+
+#go-back-button {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-bottom: auto;
+	width: 100%;
+}
+
+#error-message {
+	font-size: 24px;
+	color: rgb(202, 18, 18);
+}

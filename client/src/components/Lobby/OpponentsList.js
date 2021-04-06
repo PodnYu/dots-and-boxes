@@ -1,7 +1,130 @@
+import { useState, useEffect, useContext, useRef } from "react";
+import { PlayerContext } from "../../App";
 import { Table, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import "./css/OpponentsList.css";
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 
-export default function OpponentsList() {
+export default function OpponentsList(props) {
+	const { socket, nickname } = useContext(PlayerContext);
+
+	const [players, setPlayers] = useState(props.playersParameters);
+
+	const history = useHistory();
+
+	const errorMessageRef = useRef();
+	
+	useEffect(() => {
+
+		if (props.isPlayerHost) {
+			const playersParameters = [];
+			playersParameters.push({ opened: true, playerNickname: nickname, color: null });
+			for (let i = 1; i < 4; ++i) {
+				playersParameters.push({ opened: props.placesCount > i ? true : false, playerNickname: null, color: null });
+			}
+			setPlayers(playersParameters);
+		}
+
+		socket.on("lobby/playerJoined", ({ playerNickname, placeIndex, color }) => {
+			console.log("lobby/playerJoined: ", playerNickname, placeIndex, color);
+			setPlayers(oldPlayers => {
+				console.log("\tplayerJoined");
+				const newPlayers = [ ...oldPlayers ];
+				newPlayers[placeIndex] = { opened: true, playerNickname, color };
+				return newPlayers;
+			});
+		});
+
+		socket.on("lobby/playerLeft", ({ playerNickname }) => {
+			console.log("lobby/playerLeft: ", playerNickname);
+			setPlayers(oldPlayers => {
+				const newPlayers = [...oldPlayers];
+				const index = newPlayers.findIndex(player => player.playerNickname === playerNickname);
+
+				if (index === -1)
+					return oldPlayers;
+
+				newPlayers[index] = { opened: true, playerNickname: null, color: null };
+
+				return newPlayers;
+			});
+		});
+
+		socket.on("lobby/hostLeft", () => {
+			console.log("lobby/hostLeft");
+			errorMessageRef.current.textContent = "Host has left";
+			setTimeout(() => {
+				history.push("/");
+			}, 3000);
+		});
+
+		socket.on("lobby/removedByHost", () => {
+			errorMessageRef.current.textContent = "Host has removed you";
+			setTimeout(() => {
+				history.push("/");
+			}, 3000);
+		});
+
+		return () => {
+			socket.off("lobby/playerJoined");
+			socket.off("lobby/playerLeft");
+			socket.off("lobby/hostLeft");
+			socket.off("lobby/removedByHost");
+		};
+	}, []);
+
+	const togglePlace = (e) => {
+		const playerIndex = e.target.id.split("-")[1];
+		const placeOpened = e.target.value === "opened" ? true : false;
+
+		setPlayers(oldPlayers => {
+			const newPlayers = [ ...oldPlayers ];
+			newPlayers[playerIndex].opened = placeOpened;
+			newPlayers[playerIndex].playerNickname = null;
+			newPlayers[playerIndex].color = null;
+			return newPlayers;
+		});
+
+		socket.emit("lobby/placeChanged", { 
+			lobbyName: props.lobbyName, 
+			placeIndex: playerIndex, 
+			opened: placeOpened
+		}, (response) => {
+
+			/*
+				Idk if we need this callback.
+			*/
+
+			console.log("lobby/placeChanged response: ", response);
+			if (!response.ok) {
+				console.error("not ok");
+			}
+
+		});
+	}; 
+
+	const getSelfRow = (index) => <tr key={index} className="player" id={`player-${index}`}>
+		<td className="align-middle nickname">{nickname}</td>
+		<td className="align-middle">
+			<Form.Control as="select" custom id={`select-${index}`} onChange={colorSelectorListener}>
+				<option value="none">Choose...</option>
+				<option value="blue" className="alert-primary">
+					Blue
+				</option>
+				<option value="green" className="alert-success">
+					Green
+				</option>
+				<option value="yellow" className="alert-warning">
+					Yellow
+				</option>
+				<option value="red" className="alert-danger">
+					Red
+				</option>
+			</Form.Control>
+		</td>
+		<td className="text-center align-middle">0</td>
+	</tr>;
+
 	return (
 		<>
 			<Table id="opponents-list" className="table">
@@ -17,62 +140,58 @@ export default function OpponentsList() {
 					</tr>
 				</thead>
 				<tbody>
-					<tr className="player" id="player_1">
-						<td className="align-middle nickname">John Kek</td>
-						<td className="align-middle">
-							<Form.Control as="select" custom id="select_1" onChange={colorSelectorListener}>
-								<option value="none">Choose...</option>
-								<option value="blue" className="alert-primary">
-									Blue
-								</option>
-								<option value="green" className="alert-success">
-									Green
-								</option>
-								<option value="yellow" className="alert-warning">
-									Yellow
-								</option>
-								<option value="red" className="alert-danger">
-									Red
-								</option>
-							</Form.Control>
-						</td>
-						<td className="text-center align-middle">0</td>
-					</tr>
-					<tr className="player" id="player_2">
-						<td className="align-middle nickname">
-							<Form.Control as="select" custom id="select_1">
-								<option value="closed">Closed</option>
-								<option value="opened">Opened</option>
-							</Form.Control>
-						</td>
-						<td className="align-middle"></td>
-						<td className="text-center align-middle">0</td>
-					</tr>
-					<tr className="player" id="player_3">
-						<td className="align-middle nickname">
-							<Form.Control as="select" custom id="select_1">
-								<option value="closed">Closed</option>
-								<option value="opened">Opened</option>
-							</Form.Control>
-						</td>
-						<td className="align-middle"></td>
-						<td className="text-center align-middle">0</td>
-					</tr>
-					<tr className="player" id="player_4">
-						<td className="nickname align-middle">
-							<Form.Control as="select" custom id="select_1">
-								<option value="closed">Closed</option>
-								<option value="opened">Opened</option>
-							</Form.Control>
-						</td>
-						<td className="align-middle"></td>
-						<td className="text-center align-middle">0</td>
-					</tr>
+
+					{players.map((place, index) => {
+						return place.playerNickname === nickname ? (
+							getSelfRow(index)
+						) : (
+							<tr key={index} className="player" id={"select-" + index}>
+								<td className="nickname align-middle">
+									{props.isPlayerHost ? <Form.Control 
+										as="select" 
+										value={place.playerNickname ? "nickname" : ((place.opened) ? "opened" : "closed")}
+										custom 
+										id={"select-" + index} 
+										onChange={togglePlace}>
+										{ place.playerNickname && <option value="nickname">{place.playerNickname}</option> }
+										<option value="opened">Opened</option>
+										<option value="closed">Closed</option>
+									</Form.Control> : 
+										<>
+											{place.playerNickname ? place.playerNickname : place.opened ? "opened" : "closed"}
+										</>
+									}
+								</td>
+								<td className="align-middle"></td>
+								<td className="text-center align-middle">0</td>
+							</tr>
+						);
+					})}
+
+					{/* {[1, 2, 3].map(el => {
+						return (
+							<tr key={el} className="player" id={"select-" + el}>
+								<td className="nickname align-middle">
+									<Form.Control as="select" defaultValue={(props.placesCount > el) ? "opened" : "closed"} custom id={"select-" + el} onChange={togglePlace}>
+										<option value="opened">Opened</option>
+										<option value="closed">Closed</option>
+									</Form.Control>
+								</td>
+								<td className="align-middle"></td>
+								<td className="text-center align-middle">0</td>
+							</tr>
+						);
+					})} */}
+
 				</tbody>
 			</Table>
-			<Link to="/" style={{ display: "flex", flexDirection: "row", justifyContent: "end", marginBottom: "auto", width: "100%" }}>
-				<Button>Go Back</Button>
-			</Link>
+			<div id="go-back-button">
+				<div ref={errorMessageRef} id="error-message">
+				</div>
+				<Link to="/">
+					<Button>Go Back</Button>
+				</Link>
+			</div>
 		</>
 	);
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Table, Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -17,6 +18,8 @@ export default function LobbiesList() {
 
 	const { socket } = useContext(PlayerContext);
 
+	const history = useHistory();
+
 	useEffect(() => {
 		socket.emit("getLobbiesList", ({ lobbiesList }) => {
 			console.log("lobbiesList: ", lobbiesList);
@@ -31,7 +34,39 @@ export default function LobbiesList() {
 		socket.on("lobbyStopped", ({ name }) => {
 			setLobbiesList((prevList) => prevList.filter((lobby) => lobby.name != name));
 		});
+
+		socket.on("placeChanged", ({ lobbyName, playersCount, placesCount }) => {
+			console.log("placeChanged: ", lobbyName, playersCount, placesCount);
+			setLobbiesList(oldLobbiesList => {
+				const newLobbiesList = [ ...oldLobbiesList ];
+				const lobby = newLobbiesList.find(lobby => lobby.name === lobbyName);
+				if (!lobby)
+					return oldLobbiesList;
+				
+				lobby.playersCount = playersCount;
+				lobby.placesCount = placesCount;
+				return newLobbiesList;
+			});
+		});
+
+		return () => {
+			socket.off("lobbyCreated");
+			socket.off("lobbyStopped");
+			socket.off("placeChanged");
+		};
 	}, []);
+
+	const tryJoinLobby = (e) => {
+		const lobbyIndex = e.target.id.split("-")[2];
+		const lobby = lobbiesList[lobbyIndex];
+
+		socket.emit("home/isLobbyAvailable", { lobbyName: lobby.name }, (response) => {
+			console.log("home/isLobbyAvailable response: ", response);
+			if (response.ok) {
+				history.push(`/lobby/${lobby.name}`);
+			}
+		});
+	};
 
 	return (
 		<>
@@ -70,12 +105,12 @@ export default function LobbiesList() {
 									</th>
 									<td className="align-middle">{lobby.hostNickname}</td>
 									<td className="align-middle">{lobby.name}</td>
-									<td className="align-middle">{lobby.playersCount}/{lobby.availablePlacesCount}</td>
+									<td className="align-middle">{lobby.playersCount}/{lobby.placesCount}</td>
 									<td className="align-middle">
 										{lobby.width}x{lobby.height}
 									</td>
 									<td className="align-middle">
-										<Button id={"join-button-" + index} variant="primary">
+										<Button id={"join-button-" + index} variant="primary" onClick={tryJoinLobby}>
 											Join
 										</Button>
 									</td>

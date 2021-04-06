@@ -38,6 +38,12 @@ export default function PlayersList() {
 			console.log("playerExited: ", nickname);
 			setPlayersList((prevList) => prevList.filter((player) => player != nickname));
 		});
+
+		return () => {
+			socket.off("playerEnetered");
+			socket.off("playerJoined");
+			socket.off("playerExited");
+		};
 	}, []);
 
 	return (
@@ -59,7 +65,7 @@ export default function PlayersList() {
 				<tbody>
 					{playersList.map((player, index) => {
 						return (
-							<tr key={player} className={nickname == player ? "self-row" : ""}>
+							<tr key={index} className={nickname == player ? "self-row" : ""}>
 								<th scope="row">{index + 1}</th>
 								<td>{player}</td>
 								<td>?/?</td>
